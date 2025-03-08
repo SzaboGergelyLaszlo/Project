@@ -1,22 +1,160 @@
 [
   {
-    "ContainingType": "BackEnd_project.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
+    "ContainingType": "BackEnd_project.Controllers.ActorController",
+    "Method": "AddNewActor",
+    "RelativePath": "actor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createActorDTO",
+        "Type": "BackEnd_project.Models.DTO.CreateActorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.ActorController",
+    "Method": "GetAllActor",
+    "RelativePath": "actor",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.ActorController",
+    "Method": "DeleteActor",
+    "RelativePath": "actor",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[BackEnd_project.WeatherForecast, BackEnd_project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
       }
-    ]
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.ActorController",
+    "Method": "UpdateActor",
+    "RelativePath": "actor",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "updateActorDTO",
+        "Type": "BackEnd_project.Models.DTO.UpdateActorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.ActorController",
+    "Method": "GetActorId",
+    "RelativePath": "actor/id",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.DirectorController",
+    "Method": "AddNewDirector",
+    "RelativePath": "director",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createDirectorDTO",
+        "Type": "BackEnd_project.Models.DTO.CreateDirectorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.DirectorController",
+    "Method": "GetAllDirector",
+    "RelativePath": "director",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.DirectorController",
+    "Method": "DeleteDirector",
+    "RelativePath": "director",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.DirectorController",
+    "Method": "UpdateActor",
+    "RelativePath": "director",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "updateDirectorDTO",
+        "Type": "BackEnd_project.Models.DTO.UpdateDirectorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.DirectorController",
+    "Method": "GetDirectorId",
+    "RelativePath": "director/id",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
