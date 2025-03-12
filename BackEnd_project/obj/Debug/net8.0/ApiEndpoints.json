@@ -156,5 +156,79 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "AddNewFilm",
+    "RelativePath": "film",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createFilmDTO",
+        "Type": "BackEnd_project.Models.DTO.CreateFilmDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "GetAllFilm",
+    "RelativePath": "film",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "DeleteFilm",
+    "RelativePath": "film",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "FilmsDirector",
+    "RelativePath": "film/filmsDirector",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "GetFilmId",
+    "RelativePath": "film/id",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
