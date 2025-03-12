@@ -1,22 +1,44 @@
-import { useState } from 'react';
-import './App.css';
-import GetAllFilm from './Components/GetAllFilm';
+import React, { useState,useEffect } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+const url = `https://localhost:7131/actor`;
+const [movieData, setMovieData] = useState([]);
 
-  const handleCount = () =>
-  {
-    setCount(count + 1)
-  }
+useEffect(() =>
+    {
+        (async () =>
+        {
+            const request = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
 
-  console.log(count)
+            if (!request.ok)
+            {
+                console.log("Hiba")
+                return
+            }
 
-    return (
-      <div className='container'>
-        <GetAllFilm count={count} handleCount={handleCount} />
-      </div>
-    );
+            const response = await request.json();
+            setMovieData((response.result))
+            console.log(response.message)
+        })()
+    }, [])
+    
+  return (
+        <div>
+          {
+          movieData.map(movie =>
+          (
+          <p>Színész:{movie.name}</p>
+          
+          ))
+          }
+          
+          </div>
+  )
+ 
 }
 
-export default App;
+export default App
