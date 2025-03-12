@@ -201,6 +201,43 @@
   },
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "FilmUpdate",
+    "RelativePath": "film",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "updateFilmDTO",
+        "Type": "BackEnd_project.Models.DTO.UpdateFilmDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "ActorsForFilm",
+    "RelativePath": "film/ActorsForFilm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "FilmsDirector",
     "RelativePath": "film/filmsDirector",
     "HttpMethod": "GET",
@@ -229,6 +266,16 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.UserController",
+    "Method": "GetAllUser",
+    "RelativePath": "user",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   }
 ]

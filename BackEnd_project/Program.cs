@@ -1,3 +1,6 @@
+using BackEnd_project.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace BackEnd_project
 {
 
@@ -7,7 +10,7 @@ namespace BackEnd_project
         public static void Main(string[] args)
         {
 
-
+            
 
             var builder = WebApplication.CreateBuilder(args);
 

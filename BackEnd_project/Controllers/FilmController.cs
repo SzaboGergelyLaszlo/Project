@@ -150,5 +150,24 @@ namespace BackEnd_project.Controllers
                 return NotFound(new { result = "", message = "Nincs ilyen film az adatbázisban!" });
             }
         }
+
+        [HttpGet("ActorsForFilm")]
+
+        public async Task<ActionResult> ActorsForFilm(Guid id)
+        {
+            using (var context = new ProjectContext())
+            {
+                var film = await context.Films
+                    .Include(x => x.Actors)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                if (film != null)
+                {
+                    return Ok(new { result = film.Actors, message = "Sikeres lekérés!" });
+                }
+
+                return NotFound(new { result = "", message = "Nincs ilyen film az adatbázisban!" });
+            }
+        }
     }
 }
