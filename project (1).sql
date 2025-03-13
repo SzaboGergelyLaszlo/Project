@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Már 06. 18:54
+-- Létrehozás ideje: 2025. Már 13. 17:58
 -- Kiszolgáló verziója: 10.4.20-MariaDB
 -- PHP verzió: 7.3.29
 
@@ -132,7 +132,7 @@ INSERT INTO `filmactor` (`FilmId`, `ActorId`) VALUES
 
 CREATE TABLE `films` (
   `Id` char(36) NOT NULL,
-  `Name` char(36) NOT NULL,
+  `Name` varchar(40) NOT NULL,
   `Director` char(36) NOT NULL,
   `Genre` varchar(16) NOT NULL,
   `ReleaseYear` date NOT NULL,
@@ -146,7 +146,20 @@ CREATE TABLE `films` (
 --
 
 INSERT INTO `films` (`Id`, `Name`, `Director`, `Genre`, `ReleaseYear`, `Length`, `AgeCertificates`, `Summary`) VALUES
-('c8ab755b-f60b-11ef-af21-2cf05d217b52', 'Planes', '0a9d1872-3ae8-46e6-ac9b-5635355cc80c', 'Adventure|Animat', '0000-00-00', 132, 17, 'vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae nulla dapibus dolor');
+('c8ab755b-f60b-11ef-af21-2cf05d217b52', 'Planes', '0a9d1872-3ae8-46e6-ac9b-5635355cc80c', 'Adventure|Animat', '2025-03-12', 132, 17, 'vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae nulla dapibus dolor');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `rating`
+--
+
+CREATE TABLE `rating` (
+  `Id` char(36) NOT NULL,
+  `FilmId` char(36) NOT NULL,
+  `UserId` char(36) NOT NULL,
+  `Review` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -166,8 +179,8 @@ CREATE TABLE `role` (
 
 INSERT INTO `role` (`Id`, `Name`, `Description`) VALUES
 (1, 'Admin', 'Admin User'),
-(2, 'User', 'Normal Activ User'),
-(3, 'Not_active', 'Not activated user');
+(2, 'User', 'Normal user'),
+(3, 'guest', 'guest user');
 
 -- --------------------------------------------------------
 
@@ -200,18 +213,6 @@ INSERT INTO `user` (`Id`, `Name`, `Email`, `Sex`, `Joined`, `Role`) VALUES
 ('b4144357-a3a0-4a64-aaf7-98828b1ab130', 'Kissee', 'kclaesens4@businesswire.com', 'Female', '2025-02-28', 3),
 ('cf121df9-5cc4-491f-a8f1-c13a0cc642c6', 'Charmain', 'cglauber3@timesonline.co.uk', 'Female', '2025-02-28', 1);
 
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `userreview`
---
-
-CREATE TABLE `userreview` (
-  `UserId` char(36) NOT NULL,
-  `FilmId` char(36) NOT NULL,
-  `Review` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 --
 -- Indexek a kiírt táblákhoz
 --
@@ -243,6 +244,14 @@ ALTER TABLE `films`
   ADD KEY `Director` (`Director`);
 
 --
+-- A tábla indexei `rating`
+--
+ALTER TABLE `rating`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `FilmId` (`FilmId`,`UserId`),
+  ADD KEY `UserId` (`UserId`);
+
+--
 -- A tábla indexei `role`
 --
 ALTER TABLE `role`
@@ -255,13 +264,6 @@ ALTER TABLE `user`
   ADD PRIMARY KEY (`Id`),
   ADD UNIQUE KEY `Email` (`Name`),
   ADD KEY `Role` (`Role`);
-
---
--- A tábla indexei `userreview`
---
-ALTER TABLE `userreview`
-  ADD KEY `UserId` (`UserId`,`FilmId`),
-  ADD KEY `FilmId` (`FilmId`);
 
 --
 -- A kiírt táblák AUTO_INCREMENT értéke
@@ -291,17 +293,17 @@ ALTER TABLE `films`
   ADD CONSTRAINT `films_ibfk_1` FOREIGN KEY (`Director`) REFERENCES `director` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Megkötések a táblához `rating`
+--
+ALTER TABLE `rating`
+  ADD CONSTRAINT `rating_ibfk_1` FOREIGN KEY (`FilmId`) REFERENCES `films` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `rating_ibfk_2` FOREIGN KEY (`UserId`) REFERENCES `user` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Megkötések a táblához `user`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`Role`) REFERENCES `role` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Megkötések a táblához `userreview`
---
-ALTER TABLE `userreview`
-  ADD CONSTRAINT `userreview_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `user` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `userreview_ibfk_2` FOREIGN KEY (`FilmId`) REFERENCES `films` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
