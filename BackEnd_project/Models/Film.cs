@@ -7,7 +7,7 @@ public partial class Film
 {
     public Guid Id { get; set; }
 
-    public Guid Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public Guid Director { get; set; }
 
@@ -16,8 +16,6 @@ public partial class Film
     public DateTime ReleaseYear { get; set; }
 
     public int Length { get; set; }
-
-    public int Reviews { get; set; }
 
     public int AgeCertificates { get; set; }
 

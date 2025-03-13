@@ -33,7 +33,6 @@ namespace BackEnd_project.Controllers
                     Genre = createFilmDTO.Genre,
                     ReleaseYear = createFilmDTO.ReleaseYear,
                     Length = createFilmDTO.Length,
-                    Reviews = createFilmDTO.Reviews,
                     AgeCertificates = createFilmDTO.AgeCertificates,
                     Summary = createFilmDTO.Summary
                 };
@@ -137,7 +136,6 @@ namespace BackEnd_project.Controllers
                     existingFilm.Genre = updateFilmDTO.Genre;
                     existingFilm.ReleaseYear = updateFilmDTO.ReleaseYear;
                     existingFilm.Length = updateFilmDTO.Length;
-                    existingFilm.Reviews = updateFilmDTO.Reviews;
                     existingFilm.AgeCertificates = updateFilmDTO.AgeCertificates;
                     existingFilm.Summary = updateFilmDTO.Summary;
 

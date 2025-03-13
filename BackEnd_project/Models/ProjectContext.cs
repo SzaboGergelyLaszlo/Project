@@ -27,7 +27,7 @@ public partial class ProjectContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("server=localhost;database=project;user=root;password=;sslmode=none;");
+        => optionsBuilder.UseMySQL("server=localhost;database=Project;user=root;password=;sslmode=none;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -68,8 +68,8 @@ public partial class ProjectContext : DbContext
             entity.Property(e => e.AgeCertificates).HasColumnType("int(2)");
             entity.Property(e => e.Genre).HasMaxLength(16);
             entity.Property(e => e.Length).HasColumnType("int(4)");
+            entity.Property(e => e.Name).HasMaxLength(40);
             entity.Property(e => e.ReleaseYear).HasColumnType("date");
-            entity.Property(e => e.Reviews).HasColumnType("int(2)");
             entity.Property(e => e.Summary).HasColumnType("text");
 
             entity.HasOne(d => d.DirectorNavigation).WithMany(p => p.Films)
