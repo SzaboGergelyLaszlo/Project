@@ -1,5 +1,6 @@
 using BackEnd_project.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace BackEnd_project
 {
@@ -13,6 +14,8 @@ namespace BackEnd_project
             
 
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

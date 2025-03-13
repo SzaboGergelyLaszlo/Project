@@ -68,13 +68,13 @@ namespace BackEnd_project.Controllers
             using (var context = new ProjectContext())
             {
                 var film = await context.Films.FirstOrDefaultAsync(x => x.Id == id);
-                if (film != null) 
-                { 
+                if (film != null)
+                {
                     var director = await context.Directors.FirstOrDefaultAsync(x => x.Id == film.Director);
 
                     if (director != null)
                     {
-                        return Ok(new { result = director.Id + " " + director.Name + " " + director.Birthday + " " + director.Nationality +  " " + director.OscarAward + " " + director.Sex, message = "Sikeres lekérés!" });
+                        return Ok(new { result = director.Id + " " + director.Name + " " + director.Birthday + " " + director.Nationality + " " + director.OscarAward + " " + director.Sex, message = "Sikeres lekérés!" });
                     }
                     return NotFound(new { result = "", message = "Nincs ilyen director" });
                 }
@@ -88,11 +88,11 @@ namespace BackEnd_project.Controllers
 
         public async Task<ActionResult> GetFilmId(Guid id)
         {
-            using ( var context = new ProjectContext()) 
+            using (var context = new ProjectContext())
             {
                 var film = await context.Films.FirstOrDefaultAsync(x => x.Id == id);
 
-                if(film != null)
+                if (film != null)
                 {
                     return Ok(new { result = film, message = "Sikeres lekérés!" });
                 }
@@ -125,7 +125,7 @@ namespace BackEnd_project.Controllers
 
         public async Task<ActionResult> FilmUpdate(Guid id, UpdateFilmDTO updateFilmDTO)
         {
-            using (var context = new ProjectContext()) 
+            using (var context = new ProjectContext())
             {
                 var existingFilm = await context.Films.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -159,9 +159,16 @@ namespace BackEnd_project.Controllers
                     .Include(x => x.Actors)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
+
                 if (film != null)
                 {
-                    return Ok(new { result = film.Actors, message = "Sikeres lekérés!" });
+                    /*
+                    var actors = film.Actors.Select(a => new ActorDto
+                    {
+                        Id = a.Id,
+                        Name = a.Name
+                    });*/
+                    return Ok(new { result = film, message = "Sikeres lekérés!" });
                 }
 
                 return NotFound(new { result = "", message = "Nincs ilyen film az adatbázisban!" });

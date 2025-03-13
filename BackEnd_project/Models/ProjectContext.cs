@@ -21,6 +21,8 @@ public partial class ProjectContext : DbContext
 
     public virtual DbSet<Film> Films { get; set; }
 
+    public virtual DbSet<Rating> Ratings { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -91,6 +93,27 @@ public partial class ProjectContext : DbContext
                         j.ToTable("filmactor");
                         j.HasIndex(new[] { "ActorId" }, "ActorId");
                     });
+        });
+
+        modelBuilder.Entity<Rating>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("rating");
+
+            entity.HasIndex(e => new { e.FilmId, e.UserId }, "FilmId");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.Review).HasColumnType("int(11)");
+
+            entity.HasOne(d => d.Film).WithMany(p => p.Ratings)
+                .HasForeignKey(d => d.FilmId)
+                .HasConstraintName("rating_ibfk_1");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Ratings)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("rating_ibfk_2");
         });
 
         modelBuilder.Entity<Role>(entity =>

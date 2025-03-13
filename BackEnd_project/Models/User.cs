@@ -17,5 +17,7 @@ public partial class User
 
     public int Role { get; set; }
 
+    public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
     public virtual Role RoleNavigation { get; set; } = null!;
 }
