@@ -269,6 +269,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "BackEnd_project.Controllers.FPTFileUploadController",
+    "Method": "FileUploadFTP",
+    "RelativePath": "FPTFileUpload",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "BackEnd_project.Controllers.LoginController",
     "Method": "Login",
     "RelativePath": "Login",

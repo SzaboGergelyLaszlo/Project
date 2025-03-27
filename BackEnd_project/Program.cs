@@ -10,6 +10,10 @@ namespace BackEnd_project
 
     public class Program
     {
+        public static string ftpUrl = "";
+        public static string ftpUserName = "";
+        public static string fptPassword = "";
+
         public static Dictionary<string, User> LoggedInUsers = new Dictionary<string, User>();
         public static string GenerateSalt()
         {
@@ -75,8 +79,8 @@ namespace BackEnd_project
                 options.AddPolicy(MyAllowSpecificOrigins,
                                       policy =>
                                       {
-                                          policy.WithOrigins("*",
-                                                             "*")
+                                          policy.WithOrigins("http://localhost:3000",
+                                                             "http://localhost:3000")
                                                                 .AllowAnyHeader()
                                                                 .AllowAnyMethod();
                                       });
