@@ -17,4 +17,7 @@ namespace BackEnd_project.Models.DTO
     //User DTO(s)
     public record CreateUserDTO(string Name, string Email, string Sex, DateTime Joined, int Role);
     public record UpdateUserDTO(string Name, string Email, string Sex, DateTime Joined, int Role);
+
+    //Rating DTO(s)
+    public record RatingDTO(Guid FilmId, Guid UserId, int Review);
 }
