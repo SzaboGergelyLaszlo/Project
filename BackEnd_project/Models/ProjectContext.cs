@@ -135,14 +135,21 @@ public partial class ProjectContext : DbContext
 
             entity.HasIndex(e => e.Name, "Email").IsUnique();
 
+            entity.HasIndex(e => e.Email, "Email_2").IsUnique();
+
+            entity.HasIndex(e => e.FelhasznaloNev, "FelhasznaloNev").IsUnique();
+
             entity.HasIndex(e => e.Role, "Role");
 
             entity.Property(e => e.Email).HasMaxLength(40);
+            entity.Property(e => e.FelhasznaloNev).HasMaxLength(100);
+            entity.Property(e => e.Hash).HasMaxLength(64);
             entity.Property(e => e.Joined)
                 .HasDefaultValueSql("'current_timestamp()'")
                 .HasColumnType("date");
             entity.Property(e => e.Name).HasMaxLength(40);
             entity.Property(e => e.Role).HasColumnType("int(10)");
+            entity.Property(e => e.Salt).HasMaxLength(64);
             entity.Property(e => e.Sex).HasColumnType("enum('Male','Female')");
 
             entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Users)

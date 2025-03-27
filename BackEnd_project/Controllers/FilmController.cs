@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace BackEnd_project.Controllers
 {
-    [Route("film")]
+    [Route("[controller]")]
     [ApiController]
     public class FilmController : ControllerBase
     {

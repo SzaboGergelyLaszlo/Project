@@ -2,7 +2,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.ActorController",
     "Method": "AddNewActor",
-    "RelativePath": "actor",
+    "RelativePath": "Actor",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -18,7 +18,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.ActorController",
     "Method": "GetAllActor",
-    "RelativePath": "actor",
+    "RelativePath": "Actor",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -28,7 +28,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.ActorController",
     "Method": "DeleteActor",
-    "RelativePath": "actor",
+    "RelativePath": "Actor",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -44,7 +44,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.ActorController",
     "Method": "UpdateActor",
-    "RelativePath": "actor",
+    "RelativePath": "Actor",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -65,7 +65,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.ActorController",
     "Method": "GetActorId",
-    "RelativePath": "actor/id",
+    "RelativePath": "Actor/id",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -81,7 +81,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.DirectorController",
     "Method": "AddNewDirector",
-    "RelativePath": "director",
+    "RelativePath": "Director",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -97,7 +97,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.DirectorController",
     "Method": "GetAllDirector",
-    "RelativePath": "director",
+    "RelativePath": "Director",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -107,7 +107,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.DirectorController",
     "Method": "DeleteDirector",
-    "RelativePath": "director",
+    "RelativePath": "Director",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -123,7 +123,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.DirectorController",
     "Method": "UpdateActor",
-    "RelativePath": "director",
+    "RelativePath": "Director",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -144,7 +144,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.DirectorController",
     "Method": "GetDirectorId",
-    "RelativePath": "director/id",
+    "RelativePath": "Director/id",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -160,7 +160,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "AddNewFilm",
-    "RelativePath": "film",
+    "RelativePath": "Film",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -176,7 +176,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "GetAllFilm",
-    "RelativePath": "film",
+    "RelativePath": "Film",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -186,7 +186,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "DeleteFilm",
-    "RelativePath": "film",
+    "RelativePath": "Film",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -202,7 +202,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "FilmUpdate",
-    "RelativePath": "film",
+    "RelativePath": "Film",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -223,7 +223,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "ActorsForFilm",
-    "RelativePath": "film/ActorsForFilm",
+    "RelativePath": "Film/ActorsForFilm",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -239,7 +239,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "FilmsDirector",
-    "RelativePath": "film/filmsDirector",
+    "RelativePath": "Film/filmsDirector",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -255,7 +255,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "GetFilmId",
-    "RelativePath": "film/id",
+    "RelativePath": "Film/id",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -269,9 +269,147 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "BackEnd_project.Controllers.LoginController",
+    "Method": "Login",
+    "RelativePath": "Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loginDTO",
+        "Type": "BackEnd_project.Models.DTO.LoginDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.LoginController",
+    "Method": "GetSalt",
+    "RelativePath": "Login/GetSailt /{Name}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "felhasznaloNev",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.LogOutController",
+    "Method": "Logout",
+    "RelativePath": "LogOut/{uId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "uId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.RatingController",
+    "Method": "GetRatingByID",
+    "RelativePath": "Rating",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.RatingController",
+    "Method": "NewRating",
+    "RelativePath": "Rating",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ratingDTO",
+        "Type": "BackEnd_project.Models.DTO.RatingDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.RatingController",
+    "Method": "RatingDelete",
+    "RelativePath": "Rating",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.RatingController",
+    "Method": "UpdateRating",
+    "RelativePath": "Rating",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "rating",
+        "Type": "BackEnd_project.Models.Rating",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.RegistryController",
+    "Method": "Registry",
+    "RelativePath": "Registry",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "BackEnd_project.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "BackEnd_project.Controllers.UserController",
     "Method": "GetAllUser",
-    "RelativePath": "user",
+    "RelativePath": "User",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -281,7 +419,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.UserController",
     "Method": "NewUser",
-    "RelativePath": "user",
+    "RelativePath": "User",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -297,7 +435,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.UserController",
     "Method": "DeleteUser",
-    "RelativePath": "user",
+    "RelativePath": "User",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -313,7 +451,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.UserController",
     "Method": "UpdateUser",
-    "RelativePath": "user",
+    "RelativePath": "User",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -334,7 +472,7 @@
   {
     "ContainingType": "BackEnd_project.Controllers.UserController",
     "Method": "GetUserId",
-    "RelativePath": "user/id",
+    "RelativePath": "User/id",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd_project.Controllers
 {
-    [Route("director")]
+    [Route("[controller]")]
     [ApiController]
     public class DirectorController : ControllerBase
     {

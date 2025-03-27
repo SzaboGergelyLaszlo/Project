@@ -9,6 +9,12 @@ public partial class User
 
     public string Name { get; set; } = null!;
 
+    public string FelhasznaloNev { get; set; } = null!;
+
+    public string Salt { get; set; } = null!;
+
+    public string Hash { get; set; } = null!;
+
     public string Email { get; set; } = null!;
 
     public string Sex { get; set; } = null!;
@@ -19,5 +25,5 @@ public partial class User
 
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 
-    public virtual Role RoleNavigation { get; set; } = null!;
+    public virtual Role? RoleNavigation { get; set; } = null!;
 }

@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace BackEnd_project.Controllers
 {
-    [Route("user")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -55,6 +55,9 @@ namespace BackEnd_project.Controllers
             {
                 Id = Guid.NewGuid(),
                 Name = createUserDTO.Name,
+                FelhasznaloNev = createUserDTO.FelhasznaloNev,
+                Hash = createUserDTO.Hash,
+                Salt = createUserDTO.Salt,
                 Email = createUserDTO.Email,
                 Sex = createUserDTO.Sex,
                 Role = createUserDTO.Role
@@ -103,8 +106,10 @@ namespace BackEnd_project.Controllers
                 }
 
                 existingUser.Name = updateUserDTO.Name;
+                existingUser.FelhasznaloNev = updateUserDTO.FelhasznaloNev;
                 existingUser.Email = updateUserDTO.Email;
-                existingUser.Email = updateUserDTO.Email;
+                existingUser.Salt = updateUserDTO.Salt;
+                existingUser.Hash = updateUserDTO.Hash;
                 existingUser.Sex = updateUserDTO.Sex;
                 existingUser.Role = updateUserDTO.Role;
 

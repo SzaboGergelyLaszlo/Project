@@ -8,7 +8,7 @@ using System.Diagnostics.Metrics;
 
 namespace BackEnd_project.Controllers
 {
-    [Route("actor")]
+    [Route("[controller]")]
     [ApiController]
     public class ActorController : ControllerBase
     {
