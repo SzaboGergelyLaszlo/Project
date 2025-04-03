@@ -14,44 +14,66 @@ namespace BackEnd_project.Controllers
     {
         [HttpPost]
 
-        public async Task<ActionResult> AddNewActor(CreateActorDTO createActorDTO)
+        public async Task<ActionResult> AddNewActor(string token, CreateActorDTO createActorDTO)
         {
-            var actor = new Actor
-            {
-                Id = Guid.NewGuid(),
-                Name = createActorDTO.Name,
-                Nationality = createActorDTO.Nationality,
-                Birthday = createActorDTO.Birthday,
-                OscarAward = createActorDTO.OscarAward,
-                Sex = createActorDTO.Sex
-            };
 
-            using (var context = new ProjectContext())
+            if (Program.LoggedInUsers.ContainsKey(token) && Program.LoggedInUsers[token].Role == 1)
             {
-                await context.Actors.AddAsync(actor);
-                await context.SaveChangesAsync();
 
-                return StatusCode(201, new { result = actor, message = "Sikeres felvétel!"});
+                var actor = new Actor
+                {
+                    Id = Guid.NewGuid(),
+                    Name = createActorDTO.Name,
+                    Nationality = createActorDTO.Nationality,
+                    Birthday = createActorDTO.Birthday,
+                    OscarAward = createActorDTO.OscarAward,
+                    Sex = createActorDTO.Sex
+                };
+
+                using (var context = new ProjectContext())
+                {
+                    await context.Actors.AddAsync(actor);
+                    await context.SaveChangesAsync();
+
+                    return StatusCode(201, new { result = actor, message = "Sikeres felvétel!" });
+                }
             }
+            else
+            {
+                return BadRequest("Nincs jogosultság!");
+            }
+
+
         }
 
         [HttpGet]
 
-        public async Task<ActionResult> GetAllActor()
+        public async Task<ActionResult> GetAllActor(string token)
         {
-            using (var context = new ProjectContext())
-            {
-                var actors = await context.Actors.ToListAsync();
 
-                if (actors != null)
+            if (Program.LoggedInUsers.ContainsKey(token) && Program.LoggedInUsers[token].Role == 1)
+            {
+
+                using (var context = new ProjectContext())
                 {
-                    return Ok(new { result  = actors, message = "Sikeres lekérés!" });
+                    var actors = await context.Actors.ToListAsync();
+
+                    if (actors != null)
+                    {
+                        return Ok(new { result = actors, message = "Sikeres lekérés!" });
+                    }
+
+                    Exception e = new();
+                    return BadRequest(new { result = "", message = e.Message });
                 }
 
-                Exception e = new();
-                return BadRequest(new {result = "", message = e.Message});
             }
-            
+            else
+            {
+                return BadRequest("Nincs jogosultság!");
+            }
+
+
         }
 
         [HttpGet("id")]
@@ -62,7 +84,7 @@ namespace BackEnd_project.Controllers
             {
                 var actor = await context.Actors.FirstOrDefaultAsync(x => x.Id == id);
 
-                if(actor != null)
+                if (actor != null)
                 {
                     return Ok(new { result = actor, message = "Sikeres lekérés!" });
                 }
@@ -94,7 +116,7 @@ namespace BackEnd_project.Controllers
 
         public async Task<ActionResult> UpdateActor(Guid id, UpdateActorDTO updateActorDTO)
         {
-            using (var context = new ProjectContext()) 
+            using (var context = new ProjectContext())
             {
                 var existingActor = await context.Actors.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -115,5 +137,7 @@ namespace BackEnd_project.Controllers
                 return NotFound(new { result = "", message = "Nincs ilyen Actor az adatbázisban!" });
             }
         }
+
+        
     }
 }

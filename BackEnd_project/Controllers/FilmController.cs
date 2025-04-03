@@ -50,7 +50,10 @@ namespace BackEnd_project.Controllers
         {
             using (var context = new ProjectContext())
             {
-                var films = await context.Films.ToListAsync();
+                var films = await context.Films
+                    .Include(x => x.Ratings)
+                    .Include(x => x.Actors)
+                    .ToListAsync();
 
                 if (films != null)
                 {
@@ -162,16 +165,52 @@ namespace BackEnd_project.Controllers
 
                 if (film != null)
                 {
-                    /*
-                    var actors = film.Actors.Select(a => new ActorDto
-                    {
-                        Id = a.Id,
-                        Name = a.Name
-                    });*/
+                    
                     return Ok(new { result = film, message = "Sikeres lekérés!" });
                 }
 
                 return NotFound(new { result = "", message = "Nincs ilyen film az adatbázisban!" });
+            }
+        }
+
+        [HttpGet("AllRating")]
+
+        public async Task<ActionResult> GetAllRating(Guid id)
+        {
+            using (var context = new ProjectContext())
+            {
+                var ratings = await context.Films
+                    .Include(x => x.Ratings)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                if (ratings == null)
+                {
+                    return BadRequest(new { result = "", message = "Nincs ilyen rating" });
+                }
+
+                return Ok(new { result = ratings, message = "Sikeres lekérés!" });
+            }
+        }
+
+        [HttpGet("Rating")]
+
+        public async Task<ActionResult> AvrgRating(Guid id)
+        {
+            using (var context = new ProjectContext())
+            {
+                var film = await context.Films
+                    .Include(x => x.Ratings)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                
+                if (film == null)
+                {
+                    return BadRequest(new { result = "", message = "Nincs ilyem film az adatbázisban!" });
+                }
+
+                var atlagRating = film.Ratings.Any() ? film.Ratings.Average(r => r.Review) : 0;
+
+                return Ok(new { result = atlagRating});
+                
             }
         }
     }

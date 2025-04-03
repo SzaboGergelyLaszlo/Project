@@ -8,6 +8,11 @@
     "Order": 0,
     "Parameters": [
       {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "createActorDTO",
         "Type": "BackEnd_project.Models.DTO.CreateActorDTO",
         "IsRequired": true
@@ -22,7 +27,13 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -238,6 +249,22 @@
   },
   {
     "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "GetAllRating",
+    "RelativePath": "Film/AllRating",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "FilmsDirector",
     "RelativePath": "Film/filmsDirector",
     "HttpMethod": "GET",
@@ -256,6 +283,22 @@
     "ContainingType": "BackEnd_project.Controllers.FilmController",
     "Method": "GetFilmId",
     "RelativePath": "Film/id",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BackEnd_project.Controllers.FilmController",
+    "Method": "AvrgRating",
+    "RelativePath": "Film/Rating",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

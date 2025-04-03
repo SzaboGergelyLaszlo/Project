@@ -52,7 +52,9 @@ namespace BackEnd_project.Controllers
                 {
                     Id = Guid.NewGuid(),
                     UserId = user.Id,
-                    FilmId = film.Id
+                    FilmId = film.Id,
+                    Review = ratingDTO.Review
+                    
                 };
 
                 if (rating == null)
