@@ -3,8 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./Pages/home";
 import Movies from "./Pages/movies";
 import Actors from "./Pages/actors";
-
+import Login from "./Pages/login";
+import Admin from "./Pages/admin";
+import './App.css';
 <script src="https://cdn.tailwindcss.com"></script>
+
 
 function App() {
 
@@ -43,6 +46,8 @@ useEffect(() =>
         <li><Link to="/" className="hover:text-blue-400">Főoldal</Link></li>
         <li><Link to="/movies" className="hover:text-blue-400">Filmek</Link></li>
         <li><Link to="/actors" className="hover:text-blue-400">Színészek</Link></li>
+        <li><Link to="/login" className="hover:text-blue-400">Login</Link></li>
+        <li><Link to="/admin" className="hover:text-blue-400">Regisztráció</Link></li>
       </ul>
     </nav>
 
@@ -51,25 +56,12 @@ useEffect(() =>
           <Route path="/" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/actors" element={<Actors />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
     </Router>
-         {/*
-          {
-          movieData.map(movie =>
-          (
-          <div class="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white">
-        <div class="p-4">
-            <h2 class="text-xl font-bold">{movie.name}</h2>
-            <p class="text-gray-400 text-sm">{movie.birthday}</p>
-            <p class="mt-2">{movie.nationality}</p>
-        </div>
-    </div>
-          
-          ))
-          }
-    
-          */}
+         {}
           </div>
           
   )
