@@ -6,16 +6,18 @@ import Actors from "./Pages/actors";
 import Login from "./Pages/login";
 import Admin from "./Pages/admin";
 import './App.css';
+
 <script src="https://cdn.tailwindcss.com"></script>
 
 
 function App() {
 
 
-
 const url = `http://localhost:5297/actor`;
 const [movieData, setMovieData] = useState([]);
+const token = localStorage.getItem('authToken');
 
+console.log(token);
 useEffect(() =>
     {
         (async () =>
@@ -41,13 +43,24 @@ useEffect(() =>
   return (
         <div class="flex flex-wrap justify-center gap-6 mt-6">
           <Router>
+          
           <nav className="w-full bg-gray-800 p-4 shadow-lg">
       <ul className="flex justify-center space-x-6 text-white">
         <li><Link to="/" className="hover:text-blue-400">Főoldal</Link></li>
         <li><Link to="/movies" className="hover:text-blue-400">Filmek</Link></li>
         <li><Link to="/actors" className="hover:text-blue-400">Színészek</Link></li>
-        <li><Link to="/login" className="hover:text-blue-400">Login</Link></li>
-        <li><Link to="/admin" className="hover:text-blue-400">Regisztráció</Link></li>
+        {!token && (
+          <>
+            <li><Link to="/login" className="hover:text-blue-400">Login</Link></li>
+            <li><Link to="/admin" className="hover:text-blue-400">Regisztráció</Link></li>
+            </>
+        )}
+        {token && (
+          <li><button onClick={() => {
+            localStorage.removeItem('authToken');  // Kiléptetés
+            window.location.reload();  // Az oldal újratöltése a frissítéshez
+          }}>Kilépés</button></li>
+        )}
       </ul>
     </nav>
 

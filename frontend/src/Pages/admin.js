@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+
 const Register = () => {
   const [name, setName] = useState('');
   const [felhasznaloNev, setUsername] = useState('');
@@ -43,7 +44,7 @@ const Register = () => {
         },
       });
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         // Ha sikeres a regisztráció
         setSuccessMessage('Sikeres regisztráció!');
         setName('');

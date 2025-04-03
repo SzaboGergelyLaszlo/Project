@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [felhasznaloNev, setUsername] = useState('');
+  const [hash, setPassword] = useState('');
   const [error, setError] = useState('');
+  
+  const navigate = useNavigate();
 
   // API URL
   const apiUrl = 'http://localhost:5297/Login'; // Cseréld ki a saját API URL-edre!
@@ -14,10 +17,10 @@ const Login = () => {
     
     // Az adatok, amiket elküldünk a szervernek
     const userCredentials = {
-      username: username,
-      password: password,
+      felhasznaloNev: felhasznaloNev,
+      hash: hash,
     };
-
+ 
     try {
       // POST kérés az API felé
       const response = await axios.post(apiUrl, userCredentials, {
@@ -25,11 +28,16 @@ const Login = () => {
           'Content-Type': 'application/json', // JSON típusú tartalom
         },
       });
-
       if (response.status === 200) {
         // Ha sikeres a bejelentkezés
         alert('Sikeres bejelentkezés!');
+        console.log(response);
+        const token=response.data.token;
+
+        localStorage.setItem('authToken', token);
         // További logika itt (pl. irányíthatod a felhasználót egy másik oldalra)
+        navigate('/');
+        window.location.reload();
       }
     } catch (error) {
       // Ha hiba történik a kérés során
@@ -51,7 +59,7 @@ const Login = () => {
           <input
             type="text"
             id="username"
-            value={username}
+            value={felhasznaloNev}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
@@ -61,7 +69,7 @@ const Login = () => {
           <input
             type="password"
             id="password"
-            value={password}
+            value={hash}
             onChange={(e) => setPassword(e.target.value)}
             required
           />

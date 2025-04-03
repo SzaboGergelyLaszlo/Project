@@ -1,9 +1,11 @@
 import React, { useState,useEffect } from 'react';
 
+
 function Movies() {
   const url = `http://localhost:5297/Film`;
   const [movieData, setMovieData] = useState([]);
-  
+  const token = localStorage.getItem('authToken');
+  console.log(token);
   useEffect(() =>
       {
           (async () =>
@@ -24,9 +26,11 @@ function Movies() {
               setMovieData((response.result))
               console.log(response.message)
           })()
-      }, [])
+      },
+      [])
     return (
       <div class="flex flex-wrap justify-center gap-3 mt-3">
+
       {movieData.map(movie =>
       (
         
@@ -39,7 +43,8 @@ function Movies() {
           </div>
         
       
-      ))}
+      ))
+      }
       </div>
       
     )
