@@ -8,9 +8,11 @@ namespace BackEnd_project.Controllers
     [ApiController]
     public class FPTFileUploadController : ControllerBase
     {
+
+        [Route("FtpServer")]
         [HttpPost]
 
-        public async Task<ActionResult> FileUploadFTP()
+        public async Task<IActionResult> FileUploadFtp()
         {
             try
             {
@@ -18,18 +20,20 @@ namespace BackEnd_project.Controllers
                 var postedFile = httpRequest.Files[0];
                 string fileName = postedFile.FileName;
                 string subFolder = "";
+                //string subFolder = "/Files/";
 
-                var url = "fpt://ftp.nethely.hu" + subFolder + "/" + fileName;
+                var url = "ftp://ftp.nethely.hu" + subFolder + "/" + fileName;
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url);
-                request.Credentials = new NetworkCredential("backend_kalahora", "Bármilehet-2025");
-                await using (Stream fptStream = request.GetRequestStream())
+                request.Credentials = new NetworkCredential("backend_kalahora", "!SZGL09021992");
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                await using (Stream ftpStream = request.GetRequestStream())
                 {
-                    postedFile.CopyTo(fptStream);
+                    postedFile.CopyTo(ftpStream);
                 }
-                return Ok(fileName);
+                return Ok(new { result = fileName, message = "Sikeres feltöltés", Fileurl = url});
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Ok("default.jpg");
             }

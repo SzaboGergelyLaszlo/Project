@@ -313,8 +313,8 @@
   },
   {
     "ContainingType": "BackEnd_project.Controllers.FPTFileUploadController",
-    "Method": "FileUploadFTP",
-    "RelativePath": "FPTFileUpload",
+    "Method": "FileUploadFtp",
+    "RelativePath": "FPTFileUpload/FtpServer",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
