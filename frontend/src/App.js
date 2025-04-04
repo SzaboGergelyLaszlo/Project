@@ -16,6 +16,7 @@ function App() {
 const url = `http://localhost:5297/actor`;
 const [movieData, setMovieData] = useState([]);
 const token = localStorage.getItem('authToken');
+const jog = localStorage.getItem('authJog');
 
 console.log(token);
 useEffect(() =>
@@ -57,7 +58,8 @@ useEffect(() =>
         )}
         {token && (
           <li><button onClick={() => {
-            localStorage.removeItem('authToken');  // Kiléptetés
+            localStorage.removeItem('authToken'); 
+            localStorage.removeItem('authJog'); // Kiléptetés
             window.location.reload();  // Az oldal újratöltése a frissítéshez
           }}>Kilépés</button></li>
         )}

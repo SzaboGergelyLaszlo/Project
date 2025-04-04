@@ -33,8 +33,10 @@ const Login = () => {
         alert('Sikeres bejelentkezés!');
         console.log(response);
         const token=response.data.token;
+        const jog=response.data.jog;
 
         localStorage.setItem('authToken', token);
+        localStorage.setItem('authJog', jog);
         // További logika itt (pl. irányíthatod a felhasználót egy másik oldalra)
         navigate('/');
         window.location.reload();

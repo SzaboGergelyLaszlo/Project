@@ -5,6 +5,8 @@ function Actors() {
 
 const url = `http://localhost:5297/Actor`;
 const [actorData, setActorData] = useState([]);
+const token = localStorage.getItem('authToken');
+const jog = localStorage.getItem('authJog');
 
 useEffect(() =>
     {
@@ -12,7 +14,8 @@ useEffect(() =>
         {
             const request = await fetch(url, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             })
 

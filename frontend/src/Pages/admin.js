@@ -46,6 +46,7 @@ const Register = () => {
 
       if (response.status === 200) {
         // Ha sikeres a regisztráció
+        alert('Sikeres regisztráció!');
         setSuccessMessage('Sikeres regisztráció!');
         setName('');
         setUsername('');
