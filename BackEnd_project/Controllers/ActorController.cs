@@ -14,67 +14,53 @@ namespace BackEnd_project.Controllers
     {
         [HttpPost]
 
-        public async Task<ActionResult> AddNewActor(string token, CreateActorDTO createActorDTO)
+        public async Task<ActionResult> AddNewActor(CreateActorDTO createActorDTO)
         {
 
-            if (Program.LoggedInUsers.ContainsKey(token) && Program.LoggedInUsers[token].Role == 1)
+            var actor = new Actor
             {
+                Id = Guid.NewGuid(),
+                Name = createActorDTO.Name,
+                Nationality = createActorDTO.Nationality,
+                Birthday = createActorDTO.Birthday,
+                OscarAward = createActorDTO.OscarAward,
+                Sex = createActorDTO.Sex
+            };
 
-                var actor = new Actor
-                {
-                    Id = Guid.NewGuid(),
-                    Name = createActorDTO.Name,
-                    Nationality = createActorDTO.Nationality,
-                    Birthday = createActorDTO.Birthday,
-                    OscarAward = createActorDTO.OscarAward,
-                    Sex = createActorDTO.Sex
-                };
-
-                using (var context = new ProjectContext())
-                {
-                    await context.Actors.AddAsync(actor);
-                    await context.SaveChangesAsync();
-
-                    return StatusCode(201, new { result = actor, message = "Sikeres felvétel!" });
-                }
-            }
-            else
+            using (var context = new ProjectContext())
             {
-                return BadRequest("Nincs jogosultság!");
+                await context.Actors.AddAsync(actor);
+                await context.SaveChangesAsync();
+
+                return StatusCode(201, new { result = actor, message = "Sikeres felvétel!" });
             }
-
-
         }
+
 
         [HttpGet]
 
-        public async Task<ActionResult> GetAllActor(string token)
+        public async Task<ActionResult> GetAllActor()
         {
 
-            if (Program.LoggedInUsers.ContainsKey(token) && Program.LoggedInUsers[token].Role == 1)
+
+            using (var context = new ProjectContext())
             {
+                var actors = await context.Actors.ToListAsync();
 
-                using (var context = new ProjectContext())
+                if (actors != null)
                 {
-                    var actors = await context.Actors.ToListAsync();
-
-                    if (actors != null)
-                    {
-                        return Ok(new { result = actors, message = "Sikeres lekérés!" });
-                    }
-
-                    Exception e = new();
-                    return BadRequest(new { result = "", message = e.Message });
+                    return Ok(new { result = actors, message = "Sikeres lekérés!" });
                 }
 
+                Exception e = new();
+                return BadRequest(new { result = "", message = e.Message });
             }
-            else
-            {
-                return BadRequest("Nincs jogosultság!");
-            }
-
 
         }
+
+
+
+
 
         [HttpGet("id")]
 
@@ -138,6 +124,6 @@ namespace BackEnd_project.Controllers
             }
         }
 
-        
+
     }
 }

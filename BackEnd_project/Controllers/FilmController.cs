@@ -50,7 +50,7 @@ namespace BackEnd_project.Controllers
         {
             using (var context = new ProjectContext())
             {
-                var films = await context.Films
+                var films = await context.Films                  
                     .Include(x => x.Ratings)
                     .Include(x => x.Actors)
                     .ToListAsync();
