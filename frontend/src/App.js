@@ -49,7 +49,9 @@ useEffect(() =>
       <ul className="flex justify-center space-x-6 text-white">
         <li><Link to="/" className="hover:text-blue-400">Főoldal</Link></li>
         <li><Link to="/movies" className="hover:text-blue-400">Filmek</Link></li>
+        {token && (
         <li><Link to="/actors" className="hover:text-blue-400">Színészek</Link></li>
+        )}
         {!token && (
           <>
             <li><Link to="/login" className="hover:text-blue-400">Login</Link></li>
