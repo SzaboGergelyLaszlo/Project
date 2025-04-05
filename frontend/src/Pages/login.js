@@ -34,9 +34,11 @@ const Login = () => {
         console.log(response);
         const token=response.data.token;
         const jog=response.data.jog;
+        const userId=response.data.userId;
 
         localStorage.setItem('authToken', token);
         localStorage.setItem('authJog', jog);
+        localStorage.setItem('authUserId',userId);
         // További logika itt (pl. irányíthatod a felhasználót egy másik oldalra)
         navigate('/');
         window.location.reload();

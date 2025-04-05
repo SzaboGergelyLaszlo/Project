@@ -7,6 +7,7 @@ function Movies() {
   const [formData, setFormData] = useState({});
   const token = localStorage.getItem("authToken");
   const jog = Number(localStorage.getItem("authJog")); // Jogosultság átalakítása számmá
+  const userId=localStorage.getItem('authUserId');
 
   useEffect(() => {
     (async () => {
@@ -38,7 +39,7 @@ function Movies() {
     if (!window.confirm("Biztosan törölni szeretnéd ezt a filmet?")) return;
 
     try {
-      const deleteRequest = await fetch(`${url}/${id}`, {
+      const deleteRequest = await fetch(`${url}?id=${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -93,6 +94,40 @@ function Movies() {
     } catch (error) {
       console.error("Hálózati hiba:", error);
     }
+    
+  };
+  const handleReviewSubmit = async (movieId) => {
+    const rating = prompt("Adj meg egy értékelést 1 és 10 között:");
+    const numericRating = parseInt(rating, 10);
+
+    if (isNaN(numericRating) || numericRating < 1 || numericRating > 10) {
+      alert("Érvénytelen érték. Kérlek, számot adj meg 1 és 10 között!");
+      return;
+    }
+    try {
+      const reviewRequest = await fetch(`http://localhost:5297/Rating`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          filmId: movieId,
+          userId: userId,
+          review: numericRating,
+        }),
+      });
+      
+
+      if (!reviewRequest.ok) {
+        console.error("Hiba történt az értékelés küldésekor.");
+        return;
+      }
+
+      alert("Köszönjük az értékelést!");
+    } catch (error) {
+      console.error("Hálózati hiba:", error);
+    }
   };
 
   return (
@@ -112,7 +147,17 @@ function Movies() {
             <p className="text-gray-400 text-sm">🔞 Korhatár: {movie.ageCertificates}</p>
             <p className="mt-2">{movie.summary}</p>
 
-            {token && jog === 2 && (
+            {token && jog < 3 && (
+              <div className="mt-3 flex gap-2">
+                <button
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded"
+                  onClick={() => handleReviewSubmit(movie.id)}
+                >
+                  Értékelés
+                </button>
+              </div>
+            )}
+            {token && jog == 1 && (
               <div className="mt-3 flex gap-2">
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
@@ -128,6 +173,7 @@ function Movies() {
                 </button>
               </div>
             )}
+            
           </div>
         </div>
       ))}
