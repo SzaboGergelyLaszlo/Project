@@ -9,6 +9,7 @@ const Register = () => {
   const [hash, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [sex, setSex] = useState('');
+  const [role, setRole] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const salt ="";
@@ -32,7 +33,8 @@ const Register = () => {
       salt,
       hash,
       email,
-      sex
+      sex,
+      role:2
     };
     console.log(userCredentials);
 
@@ -55,6 +57,7 @@ const Register = () => {
         setConfirmPassword('');
         setSex('');
         setError('');
+        setRole('');
       }
     } catch (error) {
       // Ha hiba történik

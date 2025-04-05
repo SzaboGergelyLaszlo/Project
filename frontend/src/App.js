@@ -6,6 +6,7 @@ import Actors from "./Pages/actors";
 import Login from "./Pages/login";
 import Admin from "./Pages/admin";
 import Directors from "./Pages/directors";
+import Users  from './Pages/users';
 import './App.css';
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -41,6 +42,7 @@ useEffect(() =>
             const response = await request.json();
             setMovieData((response.result))
             console.log(response.message)
+            console.log(jog)
         })()
     }, [])
     
@@ -56,12 +58,16 @@ useEffect(() =>
         {token && (
         <li><Link to="/actors" className="hover:text-blue-400">Színészek</Link></li>
         )}
+        {token && jog <2 && (
+        <li><Link to="/users" className="hover:text-blue-400">Felhasználók</Link></li>
+        )}
         {!token && (
           <>
             <li><Link to="/login" className="hover:text-blue-400">Login</Link></li>
             <li><Link to="/admin" className="hover:text-blue-400">Regisztráció</Link></li>
             </>
         )}
+        
         {token && (
           <li><button onClick={() => {
             localStorage.removeItem('authToken'); 
@@ -81,6 +87,7 @@ useEffect(() =>
           <Route path="/directors" element={<Directors />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/users" element={<Users />} />
         </Routes>
       </div>
     </Router>
