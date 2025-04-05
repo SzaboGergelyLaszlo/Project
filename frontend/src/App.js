@@ -18,8 +18,10 @@ const url = `http://localhost:5297/actor`;
 const [movieData, setMovieData] = useState([]);
 const token = localStorage.getItem('authToken');
 const jog = localStorage.getItem('authJog');
+const userId=localStorage.getItem('authUserId');
 
 console.log(token);
+console.log(userId)
 useEffect(() =>
     {
         (async () =>
@@ -63,7 +65,8 @@ useEffect(() =>
         {token && (
           <li><button onClick={() => {
             localStorage.removeItem('authToken'); 
-            localStorage.removeItem('authJog'); // Kiléptetés
+            localStorage.removeItem('authJog'); 
+            localStorage.removeItem('authUserID');// Kiléptetés
             window.location.reload();  // Az oldal újratöltése a frissítéshez
           }}>Kilépés</button></li>
         )}

@@ -9,6 +9,7 @@ function Movies() {
   const jog = Number(localStorage.getItem("authJog")); // Jogosultság átalakítása számmá
   const userId=localStorage.getItem('authUserId');
   const [ratedMovies, setRatedMovies] = useState([]);
+  const [ratings, setRatings] = useState({}); // Az összes film értékeléseinek tárolása
   const [userReviews, setUserReviews] = useState([]);
   const [isAddingMovie, setIsAddingMovie] = useState(false);
   const [directors, setDirectors] = useState([]);
@@ -22,109 +23,109 @@ function Movies() {
     ageCertificates: 0,
     summary: ""
     });
-
-
-  useEffect(() => {
-    (async () => {
+/*
+    const fetchMovieRatings = async (movieId) => {
       try {
-        const [moviesRes, reviewsRes] = await Promise.all([
-          fetch(url, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-          fetch(`http://localhost:5297/User/id?id=${userId}`, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-        ]);
-  
-        if (!moviesRes.ok || !reviewsRes.ok) {
-          console.error("Hiba a filmek vagy értékelések lekérésekor");
-          return;
-        }
-  
-        const moviesData = await moviesRes.json();
-        const reviewsData = await reviewsRes.json();
-  
-        setMovieData(moviesData.result ?? moviesData);
-        setUserReviews(reviewsData.result ?? reviewsData);
-
-        
-      } catch (error) {
-        console.error("Hálózati hiba:", error);
-      }
-    })();
-  }, []);
-
-
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const request = await fetch(url, {
+        const response = await fetch(`http://localhost:5297/Film/Rating?id=${movieId}`, {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
-
-        if (!request.ok) {
-          console.error("Hiba az adatok lekérésekor");
-          return;
-        }
-
-        const response = await request.json();
-        console.log("API válasz:", response);
-
-        setMovieData(response.result ?? response);
-      } catch (error) {
-        console.error("Hálózati hiba:", error);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const [moviesRes, directorsRes] = await Promise.all([
-          fetch(url, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-          fetch('http://localhost:5297/Director', {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-        ]);
   
-        if (!moviesRes.ok || !directorsRes.ok) {
-          console.error("Hiba a filmek vagy rendezők lekérésekor");
+        if (!response.ok) {
+          console.error("Hiba a film értékeléseinek lekérésekor");
           return;
         }
   
-        const moviesData = await moviesRes.json();
-        const directorsData = await directorsRes.json();
-  
-        setMovieData(moviesData.result ?? moviesData);
-  
-        // Rendezők neveinek lekérése
-        const directors = directorsData.result ?? directorsData;
-        setDirectors(directors);
-        console.log(directors);
+        const ratingsData = await response.json();
+        return ratingsData.result ?? [];
       } catch (error) {
         console.error("Hálózati hiba:", error);
       }
-    })();
-  }, []);
+    };
+*/
+const fetchMovieRating = async (movieId) => {
+  try {
+    const response = await fetch(`http://localhost:5297/Film/Rating?id=${movieId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
+    if (response.ok) {
+      const data = await response.json();
+      // A válasz tartalmazza az átlagolt értékelést (pl. averageRating)
+      return data.result; // Az átlagolt értékelést visszaadjuk
+    } else {
+      console.error("Hiba az értékelés lekérésekor");
+      return null;
+    }
+  } catch (error) {
+    console.error("Hálózati hiba:", error);
+    return null;
+  }
+};
+
+useEffect(() => {
+  (async () => {
+    try {
+      const [moviesRes, reviewsRes, directorsRes] = await Promise.all([
+        fetch(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        fetch(`http://localhost:5297/User/id?id=${userId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        fetch('http://localhost:5297/Director', {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+      ]);
+
+      if (!moviesRes.ok || !reviewsRes.ok || !directorsRes.ok) {
+        console.error("Hiba az adatok lekérésekor");
+        return;
+      }
+
+      const moviesData = await moviesRes.json();
+      const reviewsData = await reviewsRes.json();
+      const directorsData = await directorsRes.json();
+
+      setMovieData(moviesData.result ?? moviesData);
+      setDirectors(directorsData.result ?? directorsData); // Rendezők betöltése
+
+      // Lekérjük minden film értékelését és beállítjuk őket
+      const allRatings = {};
+      for (let movie of moviesData.result) {
+        const rating = await fetchMovieRating(movie.id); // Minden filmhez külön-külön lekérjük az értékelést
+        if (rating !== null) {
+          allRatings[movie.id] = rating; // A film ID-ja alapján tároljuk el az értékelést
+        }
+      }
+
+      setRatings(allRatings); // Az összes film értékelését tároljuk
+
+    } catch (error) {
+      console.error("Hálózati hiba:", error);
+    }
+  })();
+}, [userId, token]);
+
+
+
+
+  
 /*Film hozzáadása */
   const handleAddMovie = async () => {
     try {
@@ -233,6 +234,12 @@ function Movies() {
       alert("Érvénytelen érték. Kérlek, számot adj meg 1 és 10 között!");
       return;
     }
+    const reviewData = {
+      filmId: movieId,
+      userId: userId,
+      review: numericRating,
+    };
+    console.log("Az API-nak küldött adat:", reviewData);
   
     try {
       const reviewRequest = await fetch(`http://localhost:5297/Rating`, {
@@ -241,11 +248,7 @@ function Movies() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          filmId: movieId,
-          userId: userId,
-          review: numericRating,
-        }),
+        body: JSON.stringify(reviewData),
       });
   
       if (!reviewRequest.ok) {
@@ -279,30 +282,28 @@ function Movies() {
          )}
 
 
-      {movieData.map((movie) => {
+{movieData.map((movie) => {
   const userReview = userReviews.find((review) => review.filmId === movie.id);
 
   return (
-    
-    <div
-    
-      key={movie.id}
-      className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white"
-    >
-      
+    <div key={movie.id} className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white">
       <div className="p-4">
         <h2 className="text-xl font-bold">{movie.name}</h2>
         <p className="text-gray-400 text-sm">🎭 {movie.genre}</p>
         <p className="text-gray-400 text-sm">
-  🎬 Rendező: {directors.find(director => director.id === movie.director)?.name || 'Ismeretlen'}
-</p>
+          🎬 Rendező: {directors.find(director => director.id === movie.director)?.name || 'Ismeretlen'}
+        </p>
         <p className="text-gray-400 text-sm">📅 Kiadási év: {movie.releaseYear}</p>
         <p className="text-gray-400 text-sm">⌛ Hossz: {movie.length} perc</p>
-        <p className="text-gray-400 text-sm">⭐ Értékelések: {movie.reviews}</p>
+        {/* Értékelés megjelenítése */}
+        <p className="text-gray-400 text-sm">
+          ⭐ Értékelés: {ratings[movie.id] !== undefined ? ratings[movie.id] : "Nincs értékelés"}
+        </p>
+
         <p className="text-gray-400 text-sm">🔞 Korhatár: {movie.ageCertificates}</p>
         <p className="mt-2">{movie.summary}</p>
 
-        {/* ✅ Saját értékelés csak egyszer */}
+        {/* ✅ Saját értékelés */}
         <p className="text-gray-400 text-sm">
           ⭐ Saját értékelés: {userReview ? `${userReview.review}/10` : "Nincs értékelés"}
         </p>
@@ -312,6 +313,7 @@ function Movies() {
             <button
               className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded"
               onClick={() => handleReviewSubmit(movie.id)}
+              disabled={ratedMovies.includes(movie.id)}
             >
               Értékelés
             </button>
@@ -322,7 +324,7 @@ function Movies() {
           <p className="text-green-400 text-sm mt-2">✅ Már értékelted ezt a filmet</p>
         )}
 
-        {token && jog == 1 && (
+        {token && jog === 1 && (
           <div className="mt-3 flex gap-2">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
