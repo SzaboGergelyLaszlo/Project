@@ -11,6 +11,7 @@ function Movies() {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
   const [isAddingMovie, setIsAddingMovie] = useState(false);
+  const [directors, setDirectors] = useState([]);
   const [newMovieData, setNewMovieData] = useState({
     name: "",
     director: "",
@@ -85,6 +86,45 @@ function Movies() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [moviesRes, directorsRes] = await Promise.all([
+          fetch(url, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch('http://localhost:5297/Director', {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+  
+        if (!moviesRes.ok || !directorsRes.ok) {
+          console.error("Hiba a filmek vagy rendezők lekérésekor");
+          return;
+        }
+  
+        const moviesData = await moviesRes.json();
+        const directorsData = await directorsRes.json();
+  
+        setMovieData(moviesData.result ?? moviesData);
+  
+        // Rendezők neveinek lekérése
+        const directors = directorsData.result ?? directorsData;
+        setDirectors(directors);
+        console.log(directors);
+      } catch (error) {
+        console.error("Hálózati hiba:", error);
+      }
+    })();
+  }, []);
+
 /*Film hozzáadása */
   const handleAddMovie = async () => {
     try {
@@ -253,7 +293,9 @@ function Movies() {
       <div className="p-4">
         <h2 className="text-xl font-bold">{movie.name}</h2>
         <p className="text-gray-400 text-sm">🎭 {movie.genre}</p>
-        <p className="text-gray-400 text-sm">🎬 Rendező: {movie.director}</p>
+        <p className="text-gray-400 text-sm">
+  🎬 Rendező: {directors.find(director => director.id === movie.director)?.name || 'Ismeretlen'}
+</p>
         <p className="text-gray-400 text-sm">📅 Kiadási év: {movie.releaseYear}</p>
         <p className="text-gray-400 text-sm">⌛ Hossz: {movie.length} perc</p>
         <p className="text-gray-400 text-sm">⭐ Értékelések: {movie.reviews}</p>
@@ -314,14 +356,19 @@ function Movies() {
               className="w-full p-2 border rounded mb-2"
               placeholder="Film címe"
             />
-            <input
-              type="text"
-              name="director"
-              value={formData.director}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Rendező"
-            />
+            <select
+  name="director"
+  value={newMovieData.director}
+  onChange={(e) => setNewMovieData({ ...newMovieData, director: e.target.value })}
+  className="w-full p-2 border rounded mb-2"
+>
+  <option value="">Válassz rendezőt</option>
+  {directors.map((director) => (
+    <option key={director.id} value={director.id}>
+      {director.name}
+    </option>
+  ))}
+</select>
             <input
               type="text"
               name="genre"
@@ -381,14 +428,19 @@ function Movies() {
         className="w-full p-2 border rounded mb-2"
         placeholder="Film címe"
       />
-      <input
-        type="text"
-        name="director"
-        value={newMovieData.director}
-        onChange={(e) => setNewMovieData({ ...newMovieData, director: e.target.value })}
-        className="w-full p-2 border rounded mb-2"
-        placeholder="Rendező"
-      />
+      <select
+  name="director"
+  value={newMovieData.director}
+  onChange={(e) => setNewMovieData({ ...newMovieData, director: e.target.value })}
+  className="w-full p-2 border rounded mb-2"
+>
+  <option value="">Válassz rendezőt</option>
+  {directors.map((director) => (
+    <option key={director.id} value={director.id}>
+      {director.name}
+    </option>
+  ))}
+</select>
       <input
         type="text"
         name="genre"

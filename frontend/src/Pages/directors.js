@@ -177,6 +177,7 @@ function Directors() {
             <p className="text-gray-400 text-sm">Született: {new Date(director.birthday).toLocaleDateString()}</p>
             <p className="text-gray-400 text-sm">Oscar-díjas: {director.oscarAward ? '✅' : '❌'}</p>
             <p className="text-gray-400 text-sm">Nem: {director.sex}</p>
+            <p className="text-gray-400 text-sm">Filmek: {director.films}</p>
             {jog === 1 && (
               <div className="mt-2 flex gap-2">
                  <button className="bg-blue-600 px-3 py-1 rounded" onClick={() => handleEdit(director)}>Szerkesztés</button>
