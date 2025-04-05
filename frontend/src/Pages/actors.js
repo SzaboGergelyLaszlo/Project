@@ -88,8 +88,8 @@ function Actors() {
   return (
     <div className="p-4">
       {jog <= 2 && (
-        <div className="mb-6 bg-white rounded shadow p-4">
-          <h2 className="text-lg font-bold mb-2">
+        <div className="mb-6 bg-gray-700 rounded shadow p-4">
+          <h2 className="text-white font-bold text-lg font-bold mb-2">
             {editingActor ? "Színész szerkesztése" : "Új színész hozzáadása"}
           </h2>
           <input
@@ -115,15 +115,16 @@ function Actors() {
             value={formData.birthday.split("T")[0]}
             onChange={(e) => setFormData({ ...formData, birthday: e.target.value })}
           />
-          <input
-            className="w-full p-2 border mb-2"
-            type="text"
-            name="sex"
-            placeholder="Nem"
+          <select
+            className="w-full mb-2 p-2 rounded"
             value={formData.sex}
             onChange={(e) => setFormData({ ...formData, sex: e.target.value })}
-          />
-          <label className="flex items-center mb-2">
+          >
+            <option value="">Nem kiválasztása</option>
+            <option value="Male">Férfi</option>
+            <option value="Female">Nő</option>
+          </select>
+          <label className="text-white">
             <input
               type="checkbox"
               checked={formData.oscarAward}
@@ -138,6 +139,19 @@ function Actors() {
           >
             Mentés
           </button>
+          <br></br>
+            <br></br>
+            {editingActor && (
+              <button
+                className="bg-gray-500 px-4 py-2 rounded text-white"
+                onClick={() => {
+                  setEditingActor(null);
+                  setFormData({ name: '', nationality: '', birthday: '', oscarAward: false, sex: '' });
+                }}
+              >
+                Mégse
+              </button>
+            )}
         </div>
       )}
 
@@ -147,6 +161,7 @@ function Actors() {
             key={actor.id}
             className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white"
           >
+            
             <div className="p-4">
               <h2 className="text-xl font-bold">{actor.name}</h2>
               <p className="text-gray-400 text-sm">{actor.birthday.split("T")[0]}</p>

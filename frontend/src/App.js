@@ -5,6 +5,7 @@ import Movies from "./Pages/movies";
 import Actors from "./Pages/actors";
 import Login from "./Pages/login";
 import Admin from "./Pages/admin";
+import Directors from "./Pages/directors";
 import './App.css';
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -49,6 +50,7 @@ useEffect(() =>
       <ul className="flex justify-center space-x-6 text-white">
         <li><Link to="/" className="hover:text-blue-400">Főoldal</Link></li>
         <li><Link to="/movies" className="hover:text-blue-400">Filmek</Link></li>
+        <li><Link to="/directors" className="hover:text-blue-400">Rendezők</Link></li>
         {token && (
         <li><Link to="/actors" className="hover:text-blue-400">Színészek</Link></li>
         )}
@@ -73,6 +75,7 @@ useEffect(() =>
           <Route path="/" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/actors" element={<Actors />} />
+          <Route path="/directors" element={<Directors />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>

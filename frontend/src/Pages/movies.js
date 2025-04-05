@@ -111,7 +111,7 @@ function Movies() {
         name: "",
         director: "",
         genre: "",
-        releaseYear: "",
+        releaseYear:"",
         length: 0,
         reviews: 0,
         ageCertificates: 0,
@@ -237,6 +237,8 @@ function Movies() {
           </button>
         </div>
          )}
+
+
       {movieData.map((movie) => {
   const userReview = userReviews.find((review) => review.filmId === movie.id);
 
@@ -247,7 +249,7 @@ function Movies() {
       key={movie.id}
       className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white"
     >
-        
+      
       <div className="p-4">
         <h2 className="text-xl font-bold">{movie.name}</h2>
         <p className="text-gray-400 text-sm">🎭 {movie.genre}</p>
