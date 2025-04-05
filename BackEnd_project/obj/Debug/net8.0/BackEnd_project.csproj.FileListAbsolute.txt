@@ -392,3 +392,11 @@ C:\Users\szabogl\source\repos\Project\Project\BackEnd_project\obj\Debug\net8.0\r
 C:\Users\szabogl\source\repos\Project\Project\BackEnd_project\obj\Debug\net8.0\BackEnd_project.pdb
 C:\Users\szabogl\source\repos\Project\Project\BackEnd_project\obj\Debug\net8.0\BackEnd_project.genruntimeconfig.cache
 C:\Users\szabogl\source\repos\Project\Project\BackEnd_project\obj\Debug\net8.0\ref\BackEnd_project.dll
+E:\program\mappa\BackEnd_project\BackEnd_project\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\program\mappa\BackEnd_project\BackEnd_project\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\program\mappa\BackEnd_project\BackEnd_project\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\program\mappa\BackEnd_project\BackEnd_project\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\program\mappa\BackEnd_project\BackEnd_project\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\program\mappa\BackEnd_project\BackEnd_project\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\program\mappa\BackEnd_project\BackEnd_project\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\program\mappa\BackEnd_project\BackEnd_project\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

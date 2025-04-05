@@ -1,5 +1,6 @@
 ﻿using BackEnd_project.Models;
 using BackEnd_project.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace BackEnd_project.Controllers
     [ApiController]
     public class ActorController : ControllerBase
     {
+        
         [HttpPost]
 
         public async Task<ActionResult> AddNewActor(CreateActorDTO createActorDTO)
@@ -35,7 +37,6 @@ namespace BackEnd_project.Controllers
                 return StatusCode(201, new { result = actor, message = "Sikeres felvétel!" });
             }
         }
-
 
         [HttpGet]
 

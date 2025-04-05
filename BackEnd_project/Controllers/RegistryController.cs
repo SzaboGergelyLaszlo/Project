@@ -24,7 +24,7 @@ namespace BackEnd_project.Controllers
                     {
                         return Ok("Ezzel az e-mail címmel már regisztráltak!");
                     }
-                    user.Role = 2;
+                    user.Role = user.Role;
                     user.Hash = Program.CreateSHA256(user.Hash);
                     await context.Users.AddAsync(user);
                     await context.SaveChangesAsync();

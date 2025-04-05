@@ -1,5 +1,6 @@
 ﻿using BackEnd_project.Models;
 using BackEnd_project.Models.DTO;
+using BackEnd_project.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,8 @@ namespace BackEnd_project.Controllers
 
         public async Task<ActionResult> GetSalt(string felhasznaloNev)
         {
+            
+
             using (var context = new ProjectContext())
             {
                 try
@@ -39,13 +42,14 @@ namespace BackEnd_project.Controllers
                     User loggedUser = await context.Users.FirstOrDefaultAsync(f => f.FelhasznaloNev == loginDTO.FelhasznaloNev && f.Hash == Hash);
                     if (loggedUser != null)
                     {
-                        string token = Guid.NewGuid().ToString();
+                        var token = Guid.NewGuid().ToString();
+                        
                         lock (Program.LoggedInUsers)
                         {
                             Program.LoggedInUsers.Add(token, loggedUser);
                         }
 
-                        return Ok(new LoggedUser { Name = loggedUser.Name, Email = loggedUser.Email, Jog = loggedUser.Role, Token = token });
+                        return Ok(new LoggedUser {Id = loggedUser.Id , Name = loggedUser.Name, Email = loggedUser.Email, Jog = loggedUser.Role, Token = token });
                     }
                     else
                     {
