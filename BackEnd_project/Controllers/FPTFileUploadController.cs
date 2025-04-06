@@ -14,13 +14,13 @@ namespace BackEnd_project.Controllers
 
         public async Task<IActionResult> FileUploadFtp()
         {
+            
             try
             {
                 var httpRequest = Request.Form;
                 var postedFile = httpRequest.Files[0];
                 string fileName = postedFile.FileName;
                 string subFolder = "";
-                //string subFolder = "/Files/";
 
                 var url = "ftp://ftp.nethely.hu" + subFolder + "/" + fileName;
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url);

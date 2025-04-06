@@ -3,6 +3,7 @@ using BackEnd_project.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Security.Policy;
 using System.Xml.Linq;
 
@@ -14,7 +15,7 @@ namespace BackEnd_project.Controllers
     {
         [HttpPost]
 
-        public async Task<ActionResult> AddNewFilm(CreateFilmDTO createFilmDTO)
+        public async Task<ActionResult> AddNewFilm([FromForm]  CreateFilmDTO createFilmDTO)
         {
             using (var context = new ProjectContext())
             {
@@ -23,6 +24,20 @@ namespace BackEnd_project.Controllers
                 if (director == null)
                 {
                     return NotFound(new { result = "", message = "Nem található ilyen Director az adatbázisban!" });
+                }
+
+                string fileName = "users.png";
+                string subFolder = "";
+
+                fileName = Path.GetFileName(createFilmDTO.Kep.FileName);
+                var url = "ftp://ftp.nethely.hu" + "/" + subFolder + "/" + fileName;
+
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url);
+                request.Credentials = new NetworkCredential("backend_kalahora", "!SZGL09021992");
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                await using (Stream ftpStream = request.GetRequestStream())
+                {
+                    await createFilmDTO.Kep.CopyToAsync(ftpStream);
                 }
 
                 var film = new Film
@@ -34,8 +49,9 @@ namespace BackEnd_project.Controllers
                     ReleaseYear = createFilmDTO.ReleaseYear,
                     Length = createFilmDTO.Length,
                     AgeCertificates = createFilmDTO.AgeCertificates,
-                    Summary = createFilmDTO.Summary
-                };
+                    Summary = createFilmDTO.Summary,
+                    Kép = $"http://kepek.noreplykalahora1992.nhely.hu/{fileName}"
+            };
 
                 await context.Films.AddAsync(film);
                 await context.SaveChangesAsync();
@@ -126,10 +142,30 @@ namespace BackEnd_project.Controllers
 
         [HttpPut]
 
-        public async Task<ActionResult> FilmUpdate(Guid id, UpdateFilmDTO updateFilmDTO)
+        public async Task<ActionResult> FilmUpdate(Guid id,[FromForm] UpdateFilmDTO updateFilmDTO)
         {
             using (var context = new ProjectContext())
             {
+                string fileName = "movie.png";
+
+                if (updateFilmDTO.Kep != null)
+                {
+
+
+                    string subFolder = "";
+                    fileName = Path.GetFileName(updateFilmDTO.Kep.FileName);
+                    var url = "ftp://ftp.nethely.hu" + "/" + subFolder + "/" + fileName;
+
+                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url);
+                    request.Credentials = new NetworkCredential("backend_kalahora", "!SZGL09021992");
+                    request.Method = WebRequestMethods.Ftp.UploadFile;
+                    await using (Stream ftpStream = request.GetRequestStream())
+                    {
+                        await updateFilmDTO.Kep.CopyToAsync(ftpStream);
+                    }
+
+                }
+
                 var existingFilm = await context.Films.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (existingFilm != null)
@@ -141,6 +177,7 @@ namespace BackEnd_project.Controllers
                     existingFilm.Length = updateFilmDTO.Length;
                     existingFilm.AgeCertificates = updateFilmDTO.AgeCertificates;
                     existingFilm.Summary = updateFilmDTO.Summary;
+                    existingFilm.Kép = $"http://kepek.noreplykalahora1992.nhely.hu/{fileName}";
 
                     context.Films.Update(existingFilm);
                     await context.SaveChangesAsync();

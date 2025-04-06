@@ -17,6 +17,7 @@ namespace BackEnd_project
         public static string ftpPassword = "!SZGL09021992";
 
         public static Dictionary<string, User> LoggedInUsers = new Dictionary<string, User>();
+        
         public static string GenerateSalt()
         {
             Random random = new Random();

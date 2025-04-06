@@ -11,8 +11,6 @@ public partial class User
 
     public string FelhasznaloNev { get; set; } = null!;
 
-    public string Salt { get; set; } = null!;
-
     public string Hash { get; set; } = null!;
 
     public string Email { get; set; } = null!;
@@ -23,7 +21,9 @@ public partial class User
 
     public int Role { get; set; }
 
+    public string ProfilKép { get; set; } = null!;
+
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 
-    public virtual Role? RoleNavigation { get; set; } = null!;
+    public virtual Role RoleNavigation { get; set; } = null!;
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MySqlX.XDevAPI.Common;
 using System.Diagnostics.Metrics;
+using System.Net;
 
 namespace BackEnd_project.Controllers
 {
@@ -16,8 +17,29 @@ namespace BackEnd_project.Controllers
         
         [HttpPost]
 
-        public async Task<ActionResult> AddNewActor(CreateActorDTO createActorDTO)
+        public async Task<ActionResult> AddNewActor([FromForm] CreateActorDTO createActorDTO)
         {
+
+            string fileName = "users.png";
+            string subFolder = "";
+
+            var url = "ftp://ftp.nethely.hu" + "/" + subFolder + "/" + fileName;
+
+            if (createActorDTO.Kep != null)
+            {
+                fileName = Path.GetFileName(createActorDTO.Kep.FileName);
+                url = "ftp://ftp.nethely.hu" + "/" + subFolder + "/" + fileName;
+
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url);
+                request.Credentials = new NetworkCredential("backend_kalahora", "!SZGL09021992");
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                await using (Stream ftpStream = request.GetRequestStream())
+                {
+                    await createActorDTO.Kep.CopyToAsync(ftpStream);
+                }
+
+            }
+
 
             var actor = new Actor
             {
@@ -26,7 +48,8 @@ namespace BackEnd_project.Controllers
                 Nationality = createActorDTO.Nationality,
                 Birthday = createActorDTO.Birthday,
                 OscarAward = createActorDTO.OscarAward,
-                Sex = createActorDTO.Sex
+                Sex = createActorDTO.Sex,
+                ProfilKép = $"http://kepek.noreplykalahora1992.nhely.hu/{fileName}"
             };
 
             using (var context = new ProjectContext())
@@ -105,6 +128,28 @@ namespace BackEnd_project.Controllers
         {
             using (var context = new ProjectContext())
             {
+
+                string fileName = "users.png";
+
+                if (updateActorDTO.Kep != null)
+                {
+
+
+                    string subFolder = "";
+                    fileName = Path.GetFileName(updateActorDTO.Kep.FileName);
+                    var url = "ftp://ftp.nethely.hu" + "/" + subFolder + "/" + fileName;
+
+                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url);
+                    request.Credentials = new NetworkCredential("backend_kalahora", "!SZGL09021992");
+                    request.Method = WebRequestMethods.Ftp.UploadFile;
+                    await using (Stream ftpStream = request.GetRequestStream())
+                    {
+                        await updateActorDTO.Kep.CopyToAsync(ftpStream);
+                    }
+
+                }
+
+
                 var existingActor = await context.Actors.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (existingActor != null)
@@ -114,6 +159,7 @@ namespace BackEnd_project.Controllers
                     existingActor.OscarAward = updateActorDTO.OscarAward;
                     existingActor.Birthday = updateActorDTO.Birthday;
                     existingActor.Sex = updateActorDTO.Sex;
+                    existingActor.ProfilKép = $"http://kepek.noreplykalahora1992.nhely.hu/{fileName}";
 
                     context.Actors.Update(existingActor);
                     await context.SaveChangesAsync();

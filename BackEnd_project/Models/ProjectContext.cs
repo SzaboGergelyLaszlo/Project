@@ -43,6 +43,7 @@ public partial class ProjectContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(40);
             entity.Property(e => e.Nationality).HasMaxLength(40);
             entity.Property(e => e.OscarAward).HasColumnName("Oscar_award");
+            entity.Property(e => e.ProfilKép).HasMaxLength(256);
             entity.Property(e => e.Sex).HasColumnType("enum('Male','Female')");
         });
 
@@ -56,6 +57,7 @@ public partial class ProjectContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(40);
             entity.Property(e => e.Nationality).HasMaxLength(40);
             entity.Property(e => e.OscarAward).HasColumnName("Oscar_award");
+            entity.Property(e => e.ProfilKép).HasMaxLength(256);
             entity.Property(e => e.Sex).HasColumnType("enum('Male','Female')");
         });
 
@@ -69,9 +71,10 @@ public partial class ProjectContext : DbContext
 
             entity.Property(e => e.AgeCertificates).HasColumnType("int(2)");
             entity.Property(e => e.Genre).HasMaxLength(16);
+            entity.Property(e => e.Kép).HasMaxLength(256);
             entity.Property(e => e.Length).HasColumnType("int(4)");
             entity.Property(e => e.Name).HasMaxLength(40);
-            entity.Property(e => e.ReleaseYear).HasColumnType("date");
+            entity.Property(e => e.ReleaseYear).HasColumnType("int(8)");
             entity.Property(e => e.Summary).HasColumnType("text");
 
             entity.HasOne(d => d.DirectorNavigation).WithMany(p => p.Films)
@@ -148,8 +151,8 @@ public partial class ProjectContext : DbContext
                 .HasDefaultValueSql("'current_timestamp()'")
                 .HasColumnType("date");
             entity.Property(e => e.Name).HasMaxLength(40);
+            entity.Property(e => e.ProfilKép).HasMaxLength(256);
             entity.Property(e => e.Role).HasColumnType("int(10)");
-            entity.Property(e => e.Salt).HasMaxLength(64);
             entity.Property(e => e.Sex).HasColumnType("enum('Male','Female')");
 
             entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Users)

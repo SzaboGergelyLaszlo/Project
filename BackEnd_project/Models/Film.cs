@@ -13,13 +13,15 @@ public partial class Film
 
     public string Genre { get; set; } = null!;
 
-    public DateTime ReleaseYear { get; set; }
+    public int ReleaseYear { get; set; }
 
     public int Length { get; set; }
 
     public int AgeCertificates { get; set; }
 
     public string Summary { get; set; } = null!;
+
+    public string Kép { get; set; } = null!;
 
     public virtual Director DirectorNavigation { get; set; } = null!;
 

@@ -1,6 +1,5 @@
 ﻿using BackEnd_project.Models;
 using BackEnd_project.Models.DTO;
-using BackEnd_project.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,25 +10,7 @@ namespace BackEnd_project.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        [HttpPost("GetSailt /{Name}")]
-
-        public async Task<ActionResult> GetSalt(string felhasznaloNev)
-        {
-            
-
-            using (var context = new ProjectContext())
-            {
-                try
-                {
-                    User response = await context.Users.FirstOrDefaultAsync(x => x.FelhasznaloNev == felhasznaloNev);
-                    return response == null ? BadRequest("hiba") : Ok(response.Salt);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-        }
+        
         [HttpPost]
 
         public async Task<ActionResult> Login(LoginDTO loginDTO)

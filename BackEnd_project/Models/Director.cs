@@ -17,5 +17,7 @@ public partial class Director
 
     public string Sex { get; set; } = null!;
 
+    public string ProfilKép { get; set; } = null!;
+
     public virtual ICollection<Film> Films { get; set; } = new List<Film>();
 }

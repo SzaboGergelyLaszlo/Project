@@ -3,6 +3,7 @@ using BackEnd_project.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace BackEnd_project.Controllers
 {
@@ -12,8 +13,29 @@ namespace BackEnd_project.Controllers
     {
         [HttpPost]
 
-        public async Task<ActionResult> AddNewDirector(CreateDirectorDTO createDirectorDTO)
+        public async Task<ActionResult> AddNewDirector([FromForm] CreateDirectorDTO createDirectorDTO)
         {
+
+            string fileName = "users.png";
+            string subFolder = "";
+
+            var url = "ftp://ftp.nethely.hu" + "/" + subFolder + "/" + fileName;
+
+            if (createDirectorDTO.Kep != null)
+            {
+                fileName = Path.GetFileName(createDirectorDTO.Kep.FileName);
+                url = "ftp://ftp.nethely.hu" + "/" + subFolder + "/" + fileName;
+
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url);
+                request.Credentials = new NetworkCredential("backend_kalahora", "!SZGL09021992");
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                await using (Stream ftpStream = request.GetRequestStream())
+                {
+                    await createDirectorDTO.Kep.CopyToAsync(ftpStream);
+                }
+
+            }
+
             var director = new Director
             {
                 Id = Guid.NewGuid(),
@@ -21,7 +43,8 @@ namespace BackEnd_project.Controllers
                 Nationality = createDirectorDTO.Nationality,
                 Birthday = createDirectorDTO.Birthday,
                 OscarAward = createDirectorDTO.OscarAward,
-                Sex = createDirectorDTO.Sex
+                Sex = createDirectorDTO.Sex,
+                ProfilKép = $"http://kepek.noreplykalahora1992.nhely.hu/{fileName}"
             };
 
             using (var context = new ProjectContext())
@@ -90,10 +113,31 @@ namespace BackEnd_project.Controllers
 
         [HttpPut]
 
-        public async Task<ActionResult> UpdateActor(Guid id, UpdateDirectorDTO updateDirectorDTO)
+        public async Task<ActionResult> UpdateActor(Guid id,[FromForm] UpdateDirectorDTO updateDirectorDTO)
         {
             using (var context = new ProjectContext())
             {
+
+                string fileName = "users.png";
+
+                if (updateDirectorDTO.Kep != null)
+                {
+
+
+                    string subFolder = "";
+                    fileName = Path.GetFileName(updateDirectorDTO.Kep.FileName);
+                    var url = "ftp://ftp.nethely.hu" + "/" + subFolder + "/" + fileName;
+
+                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(url);
+                    request.Credentials = new NetworkCredential("backend_kalahora", "!SZGL09021992");
+                    request.Method = WebRequestMethods.Ftp.UploadFile;
+                    await using (Stream ftpStream = request.GetRequestStream())
+                    {
+                        await updateDirectorDTO.Kep.CopyToAsync(ftpStream);
+                    }
+
+                }
+
                 var existingDirector = await context.Directors.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (existingDirector != null)
@@ -103,6 +147,7 @@ namespace BackEnd_project.Controllers
                     existingDirector.OscarAward = updateDirectorDTO.OscarAward;
                     existingDirector.Birthday = updateDirectorDTO.Birthday;
                     existingDirector.Sex = updateDirectorDTO.Sex;
+                    existingDirector.ProfilKép = $"http://kepek.noreplykalahora1992.nhely.hu/{fileName}";
 
                     context.Directors.Update(existingDirector);
                     await context.SaveChangesAsync();
