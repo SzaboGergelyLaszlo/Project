@@ -8,6 +8,7 @@ function Movies() {
   const token = localStorage.getItem("authToken");
   const jog = Number(localStorage.getItem("authJog")); // Jogosultság átalakítása számmá
   const userId=localStorage.getItem('authUserId');
+  const [searchTerm, setSearchTerm] = useState(""); // Keresési kifejezés
   const [ratedMovies, setRatedMovies] = useState([]);
   const [ratings, setRatings] = useState({}); // Az összes film értékeléseinek tárolása
   const [userReviews, setUserReviews] = useState([]);
@@ -100,6 +101,13 @@ useEffect(() => {
   })();
 }, [userId, token]);
 
+const handleSearchChange = (e) => {
+  setSearchTerm(e.target.value.toLowerCase());
+};
+
+const filteredMovies = movieData.filter((movie) =>
+  movie.name.toLowerCase().includes(searchTerm)
+);
 
 
 
@@ -313,96 +321,104 @@ const handleAddMovie = async () => {
   return reviews.find((review) => review.filmId === movieId);
 };
 
-  return (
-    
-    <div className="flex flex-wrap justify-center gap-3 mt-3">
-      {token && jog === 1 && (
-        <div className="w-full flex justify-center mb-4">
-          <button
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => setIsAddingMovie(true)}
-          >
-            ➕ Új film hozzáadása
-          </button>
-        </div>
-         )}
-
-
-{movieData.map((movie) => {
-  const userReview = userReviews.find((review) => review.filmId === movie.id);
-
-  return (
-    <div key={movie.id} className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white">
-      <div className="relative">
-        {/* Kép megjelenítése */}
-        {movie.kép && (
-          <img
-            src={movie.kép}
-            alt={movie.name}
-            className="w-full h-56 object-cover rounded-t-lg"
-          />
-        )}
-      </div>
-      <div className="p-4">
-        <h2 className="text-xl font-bold">{movie.name}</h2>
-        <p className="text-gray-400 text-sm">🎭 {movie.genre}</p>
-        <p className="text-gray-400 text-sm">
-          🎬 Rendező: {directors.find(director => director.id === movie.director)?.name || 'Ismeretlen'}
-        </p>
-        <p className="text-gray-400 text-sm">📅 Kiadási év: {movie.releaseYear}</p>
-        <p className="text-gray-400 text-sm">⌛ Hossz: {movie.length} perc</p>
-        {/* Értékelés megjelenítése */}
-        <p className="text-gray-400 text-sm">
-          ⭐ Értékelés: {ratings[movie.id] !== undefined ? ratings[movie.id] : "Nincs értékelés"}
-        </p>
-  
-        <p className="text-gray-400 text-sm">🔞 Korhatár: {movie.ageCertificates}</p>
-        <p className="mt-2">{movie.summary}</p>
-  
-        {/* ✅ Saját értékelés */}
-        {token && (
-          <p className="text-gray-400 text-sm">
-            ⭐ Saját értékelés: {getUserReview(movie.id) ? `${getUserReview(movie.id).review}/10` : "Nincs értékelés"}
-          </p>
-        )}
-  
-        {token && jog < 3 && (
-          <div className="mt-3 flex gap-2">
-            <button
-              className={`text-white font-bold py-1 px-3 rounded ${
-                (ratedMovies.includes(movie.id) || getUserReview(movie.id)) 
-                  ? 'bg-gray-300 cursor-not-allowed' 
-                  : 'bg-yellow-500 hover:bg-yellow-600'
-              }`}
-              onClick={() => handleReviewSubmit(movie.id)}
-              disabled={ratedMovies.includes(movie.id) || getUserReview(movie.id)}
-            >
-              Értékelés
-            </button>
-          </div>
-        )}
-  
-        {token && jog === 1 && (
-          <div className="mt-3 flex gap-2">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
-              onClick={() => handleEdit(movie)}
-            >
-              Szerkesztés
-            </button>
-            <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
-              onClick={() => handleDelete(movie.id)}
-            >
-              Törlés
-            </button>
-          </div>
-        )}
-      </div>
+return ( 
+  <div className="flex flex-wrap justify-center gap-3 mt-3">
+    {/* Kereső mező */}
+    <div className="w-full mb-4">
+      <input
+        type="text"
+        placeholder="Keresés filmek között..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="w-full p-2 border rounded"
+      />
     </div>
-  );
-  
-})}
+    
+    {token && jog === 1 && (
+      <div className="w-full flex justify-center mb-4">
+        <button
+          className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => setIsAddingMovie(true)}
+        >
+          ➕ Új film hozzáadása
+        </button>
+      </div>
+    )}
+
+    {filteredMovies.map((movie) => {
+      const userReview = userReviews.find((review) => review.filmId === movie.id);
+
+      return (
+        <div key={movie.id} className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white">
+          <div className="relative">
+            {/* Kép megjelenítése */}
+            {movie.kép && (
+              <img
+                src={movie.kép}
+                alt={movie.name}
+                className="w-full h-56 object-cover rounded-t-lg"
+              />
+            )}
+          </div>
+          <div className="p-4">
+            <h2 className="text-xl font-bold">{movie.name}</h2>
+            <p className="text-gray-400 text-sm">🎭 {movie.genre}</p>
+            <p className="text-gray-400 text-sm">
+              🎬 Rendező: {directors.find(director => director.id === movie.director)?.name || 'Ismeretlen'}
+            </p>
+            <p className="text-gray-400 text-sm">📅 Kiadási év: {movie.releaseYear}</p>
+            <p className="text-gray-400 text-sm">⌛ Hossz: {movie.length} perc</p>
+            {/* Értékelés megjelenítése */}
+            <p className="text-gray-400 text-sm">
+              ⭐ Értékelés: {ratings[movie.id] !== undefined ? ratings[movie.id] : "Nincs értékelés"}
+            </p>
+
+            <p className="text-gray-400 text-sm">🔞 Korhatár: {movie.ageCertificates}</p>
+            <p className="mt-2">{movie.summary}</p>
+
+            {/* ✅ Saját értékelés */}
+            {token && (
+              <p className="text-gray-400 text-sm">
+                ⭐ Saját értékelés: {getUserReview(movie.id) ? `${getUserReview(movie.id).review}/10` : "Nincs értékelés"}
+              </p>
+            )}
+
+            {token && jog < 3 && (
+              <div className="mt-3 flex gap-2">
+                <button
+                  className={`text-white font-bold py-1 px-3 rounded ${
+                    (ratedMovies.includes(movie.id) || getUserReview(movie.id)) 
+                      ? 'bg-gray-300 cursor-not-allowed' 
+                      : 'bg-yellow-500 hover:bg-yellow-600'
+                  }`}
+                  onClick={() => handleReviewSubmit(movie.id)}
+                  disabled={ratedMovies.includes(movie.id) || getUserReview(movie.id)}
+                >
+                  Értékelés
+                </button>
+              </div>
+            )}
+
+            {token && jog === 1 && (
+              <div className="mt-3 flex gap-2">
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
+                  onClick={() => handleEdit(movie)}
+                >
+                  Szerkesztés
+                </button>
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                  onClick={() => handleDelete(movie.id)}
+                >
+                  Törlés
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    })}
 {editingMovie && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
     <div className="bg-white p-6 rounded-lg shadow-lg w-96">

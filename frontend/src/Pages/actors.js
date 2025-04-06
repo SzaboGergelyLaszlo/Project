@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 function Actors() {
   const url = "http://localhost:5297/Actor";
   const [actorData, setActorData] = useState([]);
+  const [filteredActorData, setFilteredActorData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // Új állapot a kereséshez
   const [formData, setFormData] = useState({
     name: "",
     nationality: "",
@@ -19,6 +21,18 @@ function Actors() {
     fetchActors();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredActorData(actorData);
+    } else {
+      setFilteredActorData(
+        actorData.filter((actor) =>
+          actor.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+  }, [searchTerm, actorData]);
+
   const fetchActors = async () => {
     try {
       const response = await fetch(`${url}`, {
@@ -29,6 +43,7 @@ function Actors() {
       if (!response.ok) throw new Error("Hiba a színészek lekérésekor");
       const result = await response.json();
       setActorData(result.result ?? result);
+      setFilteredActorData(result.result ?? result); // Beállítjuk a szűrt adatokat is
     } catch (error) {
       console.error(error.message);
     }
@@ -39,8 +54,7 @@ function Actors() {
     try {
       const response = await fetch(`${url}?id=${id}`, {
         method: "DELETE",
-        headers: {
-        },
+        headers: {},
       });
       if (!response.ok) throw new Error("Hiba törlés közben");
       setActorData((prev) => prev.filter((actor) => actor.id !== id));
@@ -75,8 +89,7 @@ function Actors() {
 
       const response = await fetch(endpoint, {
         method,
-        headers: {
-        },
+        headers: {},
         body: form,
       });
 
@@ -99,7 +112,7 @@ function Actors() {
 
   return (
     <div className="p-4">
-      {jog ===1 && (
+      {jog === 1 && (
         <div className="mb-6 bg-gray-700 rounded shadow p-4">
           <h2 className="text-white font-bold text-lg font-bold mb-2">
             {editingActor ? "Színész szerkesztése" : "Új színész hozzáadása"}
@@ -118,7 +131,9 @@ function Actors() {
             name="nationality"
             placeholder="Nemzetiség"
             value={formData.nationality}
-            onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, nationality: e.target.value })
+            }
           />
           <input
             className="w-full p-2 border mb-2"
@@ -140,7 +155,9 @@ function Actors() {
             <input
               type="checkbox"
               checked={formData.oscarAward}
-              onChange={(e) => setFormData({ ...formData, oscarAward: e.target.checked })}
+              onChange={(e) =>
+                setFormData({ ...formData, oscarAward: e.target.checked })
+              }
               className="mr-2"
             />
             Oscar díjas?
@@ -172,22 +189,33 @@ function Actors() {
         </div>
       )}
 
+      {/* Keresősáv */}
+      <div className="mb-4">
+        <input
+          className="w-full p-2 border mb-4"
+          type="text"
+          placeholder="Keresés színész névre"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="flex flex-wrap justify-center gap-3">
-        {actorData.map((actor) => (
+        {filteredActorData.map((actor) => (
           <div
             key={actor.id}
             className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white"
           >
             <div className="relative">
-        {/* Kép megjelenítése */}
-        {actor.profilKép && (
-          <img
-            src={actor.profilKép}
-            alt={actor.name}
-            className="w-full h-56 object-cover rounded-t-lg"
-          />
-            )}
-          </div>
+              {/* Kép megjelenítése */}
+              {actor.profilKép && (
+                <img
+                  src={actor.profilKép}
+                  alt={actor.name}
+                  className="w-full h-56 object-cover rounded-t-lg"
+                />
+              )}
+            </div>
             <div className="p-4">
               <h2 className="text-xl font-bold">{actor.name}</h2>
               <p className="text-gray-400 text-sm">{actor.birthday.split("T")[0]}</p>
@@ -197,7 +225,7 @@ function Actors() {
               </p>
               <p className="text-gray-400 text-sm">Nem: {actor.sex}</p>
 
-              {jog ===1 && (
+              {jog === 1 && (
                 <div className="flex gap-2 mt-3">
                   <button
                     className="bg-blue-600 text-white px-3 py-1 rounded"

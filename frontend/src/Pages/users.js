@@ -6,6 +6,8 @@ function Users() {
   const jog = Number(localStorage.getItem('authJog'));
 
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // Szűrt felhasználók
+  const [searchTerm, setSearchTerm] = useState(''); // Keresési szöveg
   const [formData, setFormData] = useState({
     name: '',
     felhasznaloNev: '',
@@ -21,6 +23,17 @@ function Users() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // Szűrés a keresési szöveg alapján
+    if (searchTerm) {
+      setFilteredUsers(users.filter(user => 
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ));
+    } else {
+      setFilteredUsers(users); // Ha nincs keresési szöveg, az összes felhasználót megjelenítjük
+    }
+  }, [searchTerm, users]);
 
   const fetchData = async () => {
     try {
@@ -64,18 +77,16 @@ function Users() {
   };
 
   const handleSubmit = async () => {
-    // Input validálás
     if (!formData.name || !formData.felhasznaloNev || !formData.email || !formData.sex) {
       alert("Kérem, töltse ki az összes kötelező mezőt!");
       return;
     }
-  
+
     const method = editingId ? 'PUT' : 'POST';
     const endpoint = editingId 
       ? `http://localhost:5297/User/updateUser?id=${editingId}` 
-      : url; // Ha van id, akkor PUT és az update endpointot hívjuk meg, egyébként POST a szokásos URL.
-  
-    // FormData létrehozása
+      : url;
+
     const form = new FormData();
     form.append("Name", formData.name);
     form.append("FelhasznaloNev", formData.felhasznaloNev);
@@ -84,27 +95,26 @@ function Users() {
     form.append("Sex", formData.sex);
     form.append("Role", formData.role);
     form.append("Joined", new Date().toISOString());
-  
-    // Kép hozzáadása, ha van
+
     if (formData.profilePic) {
       form.append("Kep", formData.profilePic);
     }
-  
+
     try {
       const res = await fetch(endpoint, {
         method,
         headers: {
           Authorization: `Bearer ${token}`
         },
-        body: form // FormData használata a fájlok küldéséhez
+        body: form
       });
-  
+
       if (!res.ok) {
         console.error('Hiba a mentés közben:', res.statusText);
         return;
       }
-  
-      await fetchData(); // Adatok frissítése
+
+      await fetchData();
       setFormData({
         name: '',
         felhasznaloNev: '',
@@ -113,14 +123,13 @@ function Users() {
         email: '',
         sex: '',
         role: 2,
-        profilePic: null // Reseteljük a képet
+        profilePic: null
       });
       setEditingId(null);
     } catch (error) {
       console.error('Hálózati hiba:', error);
     }
   };
-  
 
   const handleEdit = (user) => {
     setFormData({
@@ -131,13 +140,12 @@ function Users() {
       email: user.email,
       sex: user.sex,
       role: user.role,
-      profilePic: null // Reseteljük a képet szerkesztéskor
+      profilePic: null
     });
     setEditingId(user.id);
   };
 
   return (
-    
     <div className="p-6">
       {jog === 1 && (
         <div className="mt-8 bg-gray-700 p-4 rounded-lg">
@@ -184,7 +192,6 @@ function Users() {
             <option value={1}>Admin</option>
           </select>
 
-          {/* Kép feltöltés */}
           <input
             type="file"
             className="w-full mb-2 p-2 rounded"
@@ -221,19 +228,29 @@ function Users() {
         </div>
       )}
       <br />
+      {/* Kereső sáv */}
+      <div className="mb-4">
+        <input
+          type="text"
+          className="w-full p-2 rounded"
+          placeholder="Keresés név alapján"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="flex flex-wrap gap-4">
-        {users.map((user) => (
+        {filteredUsers.map((user) => (
           <div key={user.id} className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white p-4">
-              <div className="relative">
-        {/* Kép megjelenítése */}
-        {user.profilKép && (
-          <img
-            src={user.profilKép}
-            alt={user.name}
-            className="w-full h-56 object-cover rounded-t-lg"
-          />
-            )}
-          </div>
+            <div className="relative">
+              {user.profilKép && (
+                <img
+                  src={user.profilKép}
+                  alt={user.name}
+                  className="w-full h-56 object-cover rounded-t-lg"
+                />
+              )}
+            </div>
             <h2 className="text-xl font-bold">{user.name}</h2>
             <p className="text-gray-400 text-sm">Felhasználónév: {user.felhasznaloNev}</p>
             <p className="text-gray-400 text-sm">Email: {user.email}</p>

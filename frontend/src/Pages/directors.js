@@ -6,6 +6,8 @@ function Directors() {
   const jog = Number(localStorage.getItem('authJog'));
 
   const [directors, setDirectors] = useState([]);
+  const [filteredDirectors, setFilteredDirectors] = useState([]); // Szűrt rendezők
+  const [searchTerm, setSearchTerm] = useState(''); // Keresési szöveg
   const [formData, setFormData] = useState({
     name: '',
     nationality: '',
@@ -19,6 +21,17 @@ function Directors() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // Szűrés a keresési szöveg alapján
+    if (searchTerm) {
+      setFilteredDirectors(directors.filter(director =>
+        director.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ));
+    } else {
+      setFilteredDirectors(directors); // Ha nincs keresési szöveg, az összes rendezőt megjelenítjük
+    }
+  }, [searchTerm, directors]);
 
   const fetchData = async () => {
     try {
@@ -193,19 +206,30 @@ function Directors() {
         </div>
       )}
       <br />
+      {/* Kereső sáv */}
+      <div className="mb-4">
+        <input
+          type="text"
+          className="w-full p-2 rounded"
+          placeholder="Keresés név alapján"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="flex flex-wrap gap-4">
-        {directors.map((director) => (
+        {filteredDirectors.map((director) => (
           <div key={director.id} className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white p-4">
-              <div className="relative">
-        {/* Kép megjelenítése */}
-        {director.profilKép && (
-          <img
-            src={director.profilKép}
-            alt={director.name}
-            className="w-full h-56 object-cover rounded-t-lg"
-          />
-            )}
-          </div>
+            <div className="relative">
+              {/* Kép megjelenítése */}
+              {director.profilKép && (
+                <img
+                  src={director.profilKép}
+                  alt={director.name}
+                  className="w-full h-56 object-cover rounded-t-lg"
+                />
+              )}
+            </div>
             <h2 className="text-xl font-bold">{director.name}</h2>
             <p className="text-gray-400 text-sm">Nemzetiség: {director.nationality}</p>
             <p className="text-gray-400 text-sm">Született: {new Date(director.birthday).toLocaleDateString()}</p>
