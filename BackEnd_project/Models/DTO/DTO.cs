@@ -11,8 +11,8 @@ namespace BackEnd_project.Models.DTO
     public record UpdateDirectorDTO(string Name, string Nationality, DateTime Birthday, bool OscarAward, string Sex, IFormFile? Kep);
 
     //Film DTO(s)
-    public record CreateFilmDTO(string Name, Guid Director,string Genre, int ReleaseYear, int Length, int Reviews, int AgeCertificates, string Summary, IFormFile? Kep);
-    public record UpdateFilmDTO(string Name, Guid Director, string Genre, int ReleaseYear, int Length, int Reviews, int AgeCertificates, string Summary, IFormFile? Kep);
+    public record CreateFilmDTO(string Name, Guid Director,string Genre, int ReleaseYear, int Length, int? Reviews, int AgeCertificates, string Summary, IFormFile? Kep);
+    public record UpdateFilmDTO(string Name, Guid Director, string Genre, int ReleaseYear, int Length, int? Reviews, int AgeCertificates, string Summary, IFormFile? Kep);
 
     //User DTO(s)
     public record CreateUserDTO(string Name,string FelhasznaloNev, string? Hash, string Email, string Sex, DateTime? Joined, int Role, IFormFile? Kep);

@@ -124,7 +124,7 @@ namespace BackEnd_project.Controllers
 
         [HttpPut]
 
-        public async Task<ActionResult> UpdateActor(Guid id, UpdateActorDTO updateActorDTO)
+        public async Task<ActionResult> UpdateActor(Guid id,[FromForm] UpdateActorDTO updateActorDTO)
         {
             using (var context = new ProjectContext())
             {
