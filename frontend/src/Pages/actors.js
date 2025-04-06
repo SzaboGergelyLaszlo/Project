@@ -99,7 +99,7 @@ function Actors() {
 
   return (
     <div className="p-4">
-      {jog <= 2 && (
+      {jog ===1 && (
         <div className="mb-6 bg-gray-700 rounded shadow p-4">
           <h2 className="text-white font-bold text-lg font-bold mb-2">
             {editingActor ? "Színész szerkesztése" : "Új színész hozzáadása"}
@@ -197,7 +197,7 @@ function Actors() {
               </p>
               <p className="text-gray-400 text-sm">Nem: {actor.sex}</p>
 
-              {jog <= 2 && (
+              {jog ===1 && (
                 <div className="flex gap-2 mt-3">
                   <button
                     className="bg-blue-600 text-white px-3 py-1 rounded"

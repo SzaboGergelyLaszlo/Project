@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link,useNavigate } from "react-router-dom";
 import Home from "./Pages/home";
 import Movies from "./Pages/movies";
 import Actors from "./Pages/actors";
@@ -20,6 +20,8 @@ const [movieData, setMovieData] = useState([]);
 const token = localStorage.getItem('authToken');
 const jog = localStorage.getItem('authJog');
 const userId=localStorage.getItem('authUserId');
+
+
 useEffect(() =>
     {
         (async () =>
@@ -62,7 +64,7 @@ useEffect(() =>
         )}
         
         {token && (
-          <li><button onClick={() => {
+          <li><button  onClick={() => {
             localStorage.removeItem('authToken'); 
             localStorage.removeItem('authJog'); 
             localStorage.removeItem('authUserID')
