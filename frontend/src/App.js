@@ -20,9 +20,6 @@ const [movieData, setMovieData] = useState([]);
 const token = localStorage.getItem('authToken');
 const jog = localStorage.getItem('authJog');
 const userId=localStorage.getItem('authUserId');
-
-console.log(token);
-console.log(userId)
 useEffect(() =>
     {
         (async () =>
@@ -41,13 +38,11 @@ useEffect(() =>
 
             const response = await request.json();
             setMovieData((response.result))
-            console.log(response.message)
-            console.log(jog)
         })()
     }, [])
     
   return (
-        <div class="flex flex-wrap justify-center gap-6 mt-6">
+        <div className="flex flex-wrap justify-center gap-6 mt-6">
           <Router>
           
           <nav className="w-full bg-gray-800 p-4 shadow-lg">
@@ -55,9 +50,7 @@ useEffect(() =>
         <li><Link to="/" className="hover:text-blue-400">Főoldal</Link></li>
         <li><Link to="/movies" className="hover:text-blue-400">Filmek</Link></li>
         <li><Link to="/directors" className="hover:text-blue-400">Rendezők</Link></li>
-        {token && (
         <li><Link to="/actors" className="hover:text-blue-400">Színészek</Link></li>
-        )}
         {token && jog <2 && (
         <li><Link to="/users" className="hover:text-blue-400">Felhasználók</Link></li>
         )}
@@ -72,7 +65,8 @@ useEffect(() =>
           <li><button onClick={() => {
             localStorage.removeItem('authToken'); 
             localStorage.removeItem('authJog'); 
-            localStorage.removeItem('authUserID');// Kiléptetés
+            localStorage.removeItem('authUserID')
+            localStorage.removeItem('authName');// Kiléptetés
             window.location.reload();  // Az oldal újratöltése a frissítéshez
           }}>Kilépés</button></li>
         )}

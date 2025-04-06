@@ -38,8 +38,6 @@ const Register = () => {
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-          Accept: '*/*'
-          // Ne állítsd be a Content-Type-ot, a FormData automatikusan kezeli
         },
         body: formData
       });

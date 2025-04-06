@@ -30,7 +30,6 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         alert('Sikeres bejelentkezés!');
-        console.log(data);
 
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('authJog', data.jog);

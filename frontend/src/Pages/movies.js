@@ -23,29 +23,7 @@ function Movies() {
     ageCertificates: 0,
     summary: ""
     });
-/*
-    const fetchMovieRatings = async (movieId) => {
-      try {
-        const response = await fetch(`http://localhost:5297/Film/Rating?id=${movieId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        if (!response.ok) {
-          console.error("Hiba a film értékeléseinek lekérésekor");
-          return;
-        }
-  
-        const ratingsData = await response.json();
-        return ratingsData.result ?? [];
-      } catch (error) {
-        console.error("Hálózati hiba:", error);
-      }
-    };
-*/
+
 const fetchMovieRating = async (movieId) => {
   try {
     const response = await fetch(`http://localhost:5297/Film/Rating?id=${movieId}`, {
@@ -282,7 +260,6 @@ const handleAddMovie = async () => {
     }
   };
   
-
   const handleReviewSubmit = async (movieId) => {
     const rating = prompt("Adj meg egy értékelést 1 és 10 között:");
     const numericRating = parseInt(rating, 10);
@@ -297,7 +274,6 @@ const handleAddMovie = async () => {
       userId: userId,
       review: numericRating,
     };
-    console.log("Az API-nak küldött adat:", reviewData);
   
     try {
       const reviewRequest = await fetch(`http://localhost:5297/Rating`, {
@@ -314,10 +290,11 @@ const handleAddMovie = async () => {
         return;
       }
   
-      // Frissítés localStorage-ban
-      const currentReviews = JSON.parse(localStorage.getItem('userReviews')) || [];
+      // Frissítés localStorage-ban felhasználói ID alapján
+      const userReviewsKey = `${userId}_reviews`;  // Felhasználói ID alapján egyedi kulcs
+      const currentReviews = JSON.parse(localStorage.getItem(userReviewsKey)) || [];
       const updatedReviews = [...currentReviews, { filmId: movieId, review: numericRating }];
-      localStorage.setItem('userReviews', JSON.stringify(updatedReviews));
+      localStorage.setItem(userReviewsKey, JSON.stringify(updatedReviews));
   
       // Frissítés a helyi állapotban
       setRatedMovies((prev) => [...prev, movieId]);
@@ -329,10 +306,12 @@ const handleAddMovie = async () => {
       console.error("Hálózati hiba:", error);
     }
   };
-  const getUserReview = (movieId) => {
-    const reviews = JSON.parse(localStorage.getItem('userReviews')) || [];
-    return reviews.find((review) => review.filmId === movieId);
-  };
+
+ const getUserReview = (movieId) => {
+  const userReviewsKey = `${userId}_reviews`;  // Felhasználói ID alapján egyedi kulcs
+  const reviews = JSON.parse(localStorage.getItem(userReviewsKey)) || [];
+  return reviews.find((review) => review.filmId === movieId);
+};
 
   return (
     

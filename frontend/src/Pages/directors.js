@@ -211,7 +211,6 @@ function Directors() {
             <p className="text-gray-400 text-sm">Született: {new Date(director.birthday).toLocaleDateString()}</p>
             <p className="text-gray-400 text-sm">Oscar-díjas: {director.oscarAward ? '✅' : '❌'}</p>
             <p className="text-gray-400 text-sm">Nem: {director.sex}</p>
-            <p className="text-gray-400 text-sm">Filmek száma: {director.films}</p>
 
             {/* Ha van profilkép, megjelenítjük */}
             {director.profilePic && (
