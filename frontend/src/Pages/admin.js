@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -10,44 +8,43 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [sex, setSex] = useState('');
   const [role, setRole] = useState('');
+  const [kep, setKep] = useState(null); // fájl típus
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const salt ="";
+  const salt = '';
 
-  // API URL
-  const apiUrl = 'http://localhost:5297/Registry'; // Cseréld ki a saját API URL-edre!
+  const apiUrl = 'http://localhost:5297/Registry';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Ellenőrizd, hogy a jelszavak egyeznek-e
     if (hash !== confirmPassword) {
       setError('A két jelszó nem egyezik');
       return;
     }
 
-    // Az adatokat JSON-ban küldjük
-    const userCredentials = {
-      name,
-      felhasznaloNev,
-      salt,
-      hash,
-      email,
-      sex,
-      role:2
-    };
-    console.log(userCredentials);
+    const formData = new FormData();
+    formData.append('Name', name);
+    formData.append('FelhasznaloNev', felhasznaloNev);
+    formData.append('Salt', salt);
+    formData.append('Hash', hash);
+    formData.append('Email', email);
+    formData.append('Sex', sex);
+    formData.append('Role', 2);
+    formData.append('Joined', new Date().toISOString());
+    formData.append('Kep', kep || ''); // ha nincs kép, üres string
 
     try {
-      // POST kérés az API felé
-      const response = await axios.post(apiUrl, userCredentials, {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          Accept: '*/*'
+          // Ne állítsd be a Content-Type-ot, a FormData automatikusan kezeli
         },
+        body: formData
       });
 
-      if (response.status === 200) {
-        // Ha sikeres a regisztráció
+      if (response.ok) {
         alert('Sikeres regisztráció!');
         setSuccessMessage('Sikeres regisztráció!');
         setName('');
@@ -56,25 +53,22 @@ const Register = () => {
         setPassword('');
         setConfirmPassword('');
         setSex('');
-        setError('');
         setRole('');
-      }
-    } catch (error) {
-      // Ha hiba történik
-      if (error.response) {
-        // Ha van válasz az API-tól
-        setError('A regisztráció során hiba történt');
+        setKep(null);
+        setError('');
       } else {
-        // Ha nem érkezett válasz (pl. hálózati hiba)
-        setError('Hiba történt a kapcsolatban');
+        setError('A regisztráció során hiba történt');
       }
+    } catch (err) {
+      console.error(err);
+      setError('Hiba történt a kapcsolatban');
     }
   };
 
   return (
     <div className="register-container">
       <form onSubmit={handleSubmit}>
-      <div className="form-group">
+        <div className="form-group">
           <label htmlFor="name">Név:</label>
           <input
             type="text"
@@ -125,13 +119,22 @@ const Register = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="Sex">Nem:</label>
+          <label htmlFor="sex">Nem:</label>
           <input
             type="text"
             id="sex"
             value={sex}
             onChange={(e) => setSex(e.target.value)}
             required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="kep">Profilkép (opcionális):</label>
+          <input
+            type="file"
+            id="kep"
+            accept="image/*"
+            onChange={(e) => setKep(e.target.files[0])}
           />
         </div>
         {error && <div className="error">{error}</div>}

@@ -8,7 +8,8 @@ function Actors() {
     nationality: "",
     birthday: "",
     oscarAward: false,
-    sex: ""
+    sex: "",
+    kep: null, // Új mező a fájl kezelésére
   });
   const [editingActor, setEditingActor] = useState(null);
   const token = localStorage.getItem("authToken");
@@ -52,7 +53,10 @@ function Actors() {
 
   const handleEdit = (actor) => {
     setEditingActor(actor);
-    setFormData({ ...actor });
+    setFormData({
+      ...actor,
+      kep: null, // Reseteljük a képfeltöltést szerkesztésnél
+    });
   };
 
   const handleSave = async () => {
@@ -60,13 +64,23 @@ function Actors() {
       const method = editingActor ? "PUT" : "POST";
       const endpoint = editingActor ? `${url}?id=${editingActor.id}` : url;
 
+      const form = new FormData();
+      form.append("Name", formData.name);
+      form.append("Nationality", formData.nationality);
+      form.append("Birthday", new Date(formData.birthday).toISOString().split("T")[0]); // "2025.04.06" formátum
+      form.append("OscarAward", formData.oscarAward);
+      form.append("Sex", formData.sex);
+
+      if (formData.kep) {
+        form.append("Kep", formData.kep); // Fájl hozzáadása
+      }
+
       const response = await fetch(endpoint, {
         method,
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: form,
       });
 
       if (!response.ok) throw new Error("Hiba mentés közben");
@@ -77,7 +91,8 @@ function Actors() {
         nationality: "",
         birthday: "",
         oscarAward: false,
-        sex: ""
+        sex: "",
+        kep: null, // Reseteljük a képfeltöltést
       });
       fetchActors();
     } catch (error) {
@@ -133,25 +148,30 @@ function Actors() {
             />
             Oscar díjas?
           </label>
+          {/* Kép feltöltés */}
+          <input
+            type="file"
+            onChange={(e) => setFormData({ ...formData, kep: e.target.files[0] })}
+            className="w-full p-2 border mb-2"
+          />
           <button
             className="bg-green-600 text-white px-4 py-2 rounded"
             onClick={handleSave}
           >
             Mentés
           </button>
-          <br></br>
-            <br></br>
-            {editingActor && (
-              <button
-                className="bg-gray-500 px-4 py-2 rounded text-white"
-                onClick={() => {
-                  setEditingActor(null);
-                  setFormData({ name: '', nationality: '', birthday: '', oscarAward: false, sex: '' });
-                }}
-              >
-                Mégse
-              </button>
-            )}
+          <br />
+          {editingActor && (
+            <button
+              className="bg-gray-500 px-4 py-2 rounded text-white"
+              onClick={() => {
+                setEditingActor(null);
+                setFormData({ name: "", nationality: "", birthday: "", oscarAward: false, sex: "", kep: null });
+              }}
+            >
+              Mégse
+            </button>
+          )}
         </div>
       )}
 
@@ -161,7 +181,16 @@ function Actors() {
             key={actor.id}
             className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white"
           >
-            
+            <div className="relative">
+        {/* Kép megjelenítése */}
+        {actor.profilKép && (
+          <img
+            src={actor.profilKép}
+            alt={actor.name}
+            className="w-full h-56 object-cover rounded-t-lg"
+          />
+            )}
+          </div>
             <div className="p-4">
               <h2 className="text-xl font-bold">{actor.name}</h2>
               <p className="text-gray-400 text-sm">{actor.birthday.split("T")[0]}</p>

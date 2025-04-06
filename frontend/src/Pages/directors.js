@@ -11,7 +11,8 @@ function Directors() {
     nationality: '',
     birthday: '',
     oscarAward: false,
-    sex: ''
+    sex: '',
+    profilePic: null // A képfeltöltéshez
   });
   const [editingId, setEditingId] = useState(null);
 
@@ -61,25 +62,33 @@ function Directors() {
   };
 
   const handleSubmit = async () => {
+    if (!formData.name || !formData.nationality || !formData.birthday || !formData.sex) {
+      alert("Kérem, töltse ki az összes kötelező mezőt!");
+      return;
+    }
+
     const method = editingId ? 'PUT' : 'POST';
     const endpoint = editingId ? `${url}?id=${editingId}` : url;
 
-    const payload = {
-      name: formData.name,
-      nationality: formData.nationality,
-      birthday: new Date(formData.birthday).toISOString(),
-      oscarAward: formData.oscarAward,
-      sex: formData.sex
-    };
+    const form = new FormData();
+    form.append("Name", formData.name);
+    form.append("Nationality", formData.nationality);
+    form.append("Birthday", formData.birthday);
+    form.append("OscarAward", formData.oscarAward);
+    form.append("Sex", formData.sex);
+
+    // Ha van kép, azt is hozzáadjuk a FormData-hoz
+    if (formData.profilePic) {
+      form.append("Kep", formData.profilePic);
+    }
 
     try {
       const res = await fetch(endpoint, {
         method,
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload)
+        body: form // FormData küldése, hogy a fájlokat is el tudjuk küldeni
       });
 
       if (!res.ok) {
@@ -87,8 +96,15 @@ function Directors() {
         return;
       }
 
-      await fetchData();
-      setFormData({ name: '', nationality: '', birthday: '', oscarAward: false, sex: '' });
+      await fetchData(); // Frissítjük a rendezők listáját
+      setFormData({
+        name: '',
+        nationality: '',
+        birthday: '',
+        oscarAward: false,
+        sex: '',
+        profilePic: null // Kép nullázása
+      });
       setEditingId(null);
     } catch (error) {
       console.error('Hálózati hiba:', error);
@@ -99,17 +115,17 @@ function Directors() {
     setFormData({
       name: director.name,
       nationality: director.nationality,
-      birthday: director.birthday.slice(0, 10),
+      birthday: director.birthday.slice(0, 10), // Dátum formátum: YYYY-MM-DD
       oscarAward: director.oscarAward,
-      sex: director.sex
+      sex: director.sex,
+      profilePic: null // Reseteljük a képet szerkesztéskor
     });
     setEditingId(director.id);
   };
 
   return (
-    
-   <div className="p-6">
-    {jog === 1 && (
+    <div className="p-6">
+      {jog === 1 && (
         <div className="mt-8 bg-gray-700 p-4 rounded-lg">
           <h2 className="text-white font-bold text-lg mb-2">{editingId ? 'Rendező szerkesztése' : 'Új rendező hozzáadása'}</h2>
           <input
@@ -148,18 +164,26 @@ function Directors() {
             />
             Oscar-díjas
           </label>
+
+          {/* Kép feltöltése */}
+          <input
+            type="file"
+            className="w-full mb-2 p-2 rounded"
+            onChange={(e) => setFormData({ ...formData, profilePic: e.target.files[0] })}
+          />
+
           <div className="mt-3">
             <button className="bg-green-600 px-4 py-2 rounded text-white" onClick={handleSubmit}>
               Mentés
             </button>
-            <br></br>
-            <br></br>
+            <br />
+            <br />
             {editingId && (
               <button
                 className="bg-gray-500 px-4 py-2 rounded text-white"
                 onClick={() => {
                   setEditingId(null);
-                  setFormData({ name: '', nationality: '', birthday: '', oscarAward: false, sex: '' });
+                  setFormData({ name: '', nationality: '', birthday: '', oscarAward: false, sex: '', profilePic: null });
                 }}
               >
                 Mégse
@@ -168,27 +192,41 @@ function Directors() {
           </div>
         </div>
       )}
-      <br></br>
+      <br />
       <div className="flex flex-wrap gap-4">
         {directors.map((director) => (
           <div key={director.id} className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white p-4">
+              <div className="relative">
+        {/* Kép megjelenítése */}
+        {director.profilKép && (
+          <img
+            src={director.profilKép}
+            alt={director.name}
+            className="w-full h-56 object-cover rounded-t-lg"
+          />
+            )}
+          </div>
             <h2 className="text-xl font-bold">{director.name}</h2>
             <p className="text-gray-400 text-sm">Nemzetiség: {director.nationality}</p>
             <p className="text-gray-400 text-sm">Született: {new Date(director.birthday).toLocaleDateString()}</p>
             <p className="text-gray-400 text-sm">Oscar-díjas: {director.oscarAward ? '✅' : '❌'}</p>
             <p className="text-gray-400 text-sm">Nem: {director.sex}</p>
-            <p className="text-gray-400 text-sm">Nem: {director.films}</p>
+            <p className="text-gray-400 text-sm">Filmek száma: {director.films}</p>
+
+            {/* Ha van profilkép, megjelenítjük */}
+            {director.profilePic && (
+              <img src={director.profilePic} alt={`${director.name} profilja`} className="w-full h-auto rounded" />
+            )}
+
             {jog === 1 && (
               <div className="mt-2 flex gap-2">
-                 <button className="bg-blue-600 px-3 py-1 rounded" onClick={() => handleEdit(director)}>Szerkesztés</button>
+                <button className="bg-blue-600 px-3 py-1 rounded" onClick={() => handleEdit(director)}>Szerkesztés</button>
                 <button className="bg-red-600 px-3 py-1 rounded" onClick={() => handleDelete(director.id)}>Törlés</button>
               </div>
             )}
           </div>
         ))}
       </div>
-
-      
     </div>
   );
 }

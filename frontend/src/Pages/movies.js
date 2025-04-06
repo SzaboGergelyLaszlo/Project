@@ -127,42 +127,59 @@ useEffect(() => {
 
   
 /*Film hozzáadása */
-  const handleAddMovie = async () => {
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newMovieData),
-      });
-  
-      if (!response.ok) {
-        console.error("Hiba a film hozzáadásakor");
-        console.log(newMovieData);
-        return;
-      }
-  
-      const addedMovie = await response.json();
-      setMovieData((prev) => [...prev, addedMovie.result ?? addedMovie]);
-  
-      setIsAddingMovie(false);
-      setNewMovieData({
-        name: "",
-        director: "",
-        genre: "",
-        releaseYear:"",
-        length: 0,
-        reviews: 0,
-        ageCertificates: 0,
-        summary: ""
-      });
-      window.location.reload();
-    } catch (error) {
-      console.error("Hálózati hiba:", error);
+const handleAddMovie = async () => {
+  const formData = new FormData();
+  formData.append("Name", newMovieData.name);
+  formData.append("Director", newMovieData.director);
+  formData.append("Genre", newMovieData.genre);
+  formData.append("ReleaseYear", newMovieData.releaseYear);
+  formData.append("Length", newMovieData.length.toString());
+  formData.append("Summary", newMovieData.summary);
+  formData.append("AgeCertificates", newMovieData.ageCertificates.toString());
+  formData.append("Reviews", newMovieData.reviews.toString());
+
+  // Ha van kép (pl. fájl feltöltő inputból)
+  if (newMovieData.kep) {
+    formData.append("Kep", newMovieData.kep);
+  } else {
+    formData.append("Kep", new Blob([])); // Üres fájl, ha kötelező
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      console.error("Hiba a film hozzáadásakor");
+      return;
     }
-  };
+
+    const addedMovie = await response.json();
+    setMovieData((prev) => [...prev, addedMovie.result ?? addedMovie]);
+    setIsAddingMovie(false);
+
+    setNewMovieData({
+      name: "",
+      director: "",
+      genre: "",
+      releaseYear: "",
+      length: 0,
+      reviews: 0,
+      ageCertificates: 0,
+      summary: "",
+      kep: null,
+    });
+
+    window.location.reload();
+  } catch (error) {
+    console.error("Hálózati hiba:", error);
+  }
+};
 
   // ** Törlés kezelése **
   const handleDelete = async (id) => {
@@ -191,41 +208,81 @@ useEffect(() => {
   // ** Szerkesztés megnyitása **
   const handleEdit = (movie) => {
     setEditingMovie(movie);
-    setFormData({ ...movie });
+    setFormData({
+      Name: movie.name,
+      Summary: movie.summary,
+      Genre: movie.genre,
+      ReleaseYear: movie.releaseYear,
+      Length: movie.length,
+      Director: movie.director,
+      AgeCertificates: movie.ageCertificates,
+      Reviews: movie.reviews,
+      Kep: null,
+    });
   };
+  
+  
 
   // ** Input változások kezelése **
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
   };
+  
 
   // ** Szerkesztett film mentése **
   const handleSaveEdit = async () => {
     try {
-      const editRequest = await fetch(`${url}?id=${editingMovie.id}`, {
+      const payload = new FormData();
+      payload.append("Name", formData.Name);
+      payload.append("Summary", formData.Summary);
+      payload.append("Genre", formData.Genre);
+      payload.append("ReleaseYear", formData.ReleaseYear);
+      payload.append("Length", formData.Length);
+      payload.append("Director", formData.Director); // UUID!
+      payload.append("AgeCertificates", formData.AgeCertificates);
+      payload.append("Reviews", formData.Reviews);
+  
+      // Csak akkor adjuk hozzá a képet, ha van új választva
+      if (formData.Kep) {
+        payload.append("Kep", formData.Kep);
+      } else {
+        payload.append("Kep", ""); // Swagger szerint üresen is lehet küldeni
+      }
+  
+      const response = await fetch(`${url}?id=${editingMovie.id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          // NE adjunk meg content-type-ot!
         },
-        body: JSON.stringify(formData),
+        body: payload,
       });
-
-      if (!editRequest.ok) {
-        console.error("Hiba történt a szerkesztés során:");
+  
+      if (!response.ok) {
+        console.error("Sikertelen szerkesztés:", await response.text());
         return;
       }
-
+  
+      const updatedMovie = await response.json();
+  
       setMovieData((prevMovies) =>
-        prevMovies.map((movie) => (movie.id === editingMovie.id ? formData : movie))
+        prevMovies.map((movie) =>
+          movie.id === editingMovie.id ? updatedMovie : movie
+        )
       );
-
+  
       setEditingMovie(null);
+      window.location.reload();
     } catch (error) {
       console.error("Hálózati hiba:", error);
     }
-    
   };
+  
+
   const handleReviewSubmit = async (movieId) => {
     const rating = prompt("Adj meg egy értékelést 1 és 10 között:");
     const numericRating = parseInt(rating, 10);
@@ -234,6 +291,7 @@ useEffect(() => {
       alert("Érvénytelen érték. Kérlek, számot adj meg 1 és 10 között!");
       return;
     }
+  
     const reviewData = {
       filmId: movieId,
       userId: userId,
@@ -256,15 +314,24 @@ useEffect(() => {
         return;
       }
   
-      if (reviewRequest.ok) {
-        alert("Köszönjük az értékelést!");
-        setRatedMovies((prev) => [...prev, movieId]);
-        setUserReviews((prev) => [...prev, { filmId: movieId, review: numericRating }]);
-      }
+      // Frissítés localStorage-ban
+      const currentReviews = JSON.parse(localStorage.getItem('userReviews')) || [];
+      const updatedReviews = [...currentReviews, { filmId: movieId, review: numericRating }];
+      localStorage.setItem('userReviews', JSON.stringify(updatedReviews));
+  
+      // Frissítés a helyi állapotban
+      setRatedMovies((prev) => [...prev, movieId]);
+      setUserReviews((prev) => [...prev, { filmId: movieId, review: numericRating }]);
+  
+      alert("Köszönjük az értékelést!");
   
     } catch (error) {
       console.error("Hálózati hiba:", error);
     }
+  };
+  const getUserReview = (movieId) => {
+    const reviews = JSON.parse(localStorage.getItem('userReviews')) || [];
+    return reviews.find((review) => review.filmId === movieId);
   };
 
   return (
@@ -287,6 +354,16 @@ useEffect(() => {
 
   return (
     <div key={movie.id} className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white">
+      <div className="relative">
+        {/* Kép megjelenítése */}
+        {movie.kép && (
+          <img
+            src={movie.kép}
+            alt={movie.name}
+            className="w-full h-56 object-cover rounded-t-lg"
+          />
+        )}
+      </div>
       <div className="p-4">
         <h2 className="text-xl font-bold">{movie.name}</h2>
         <p className="text-gray-400 text-sm">🎭 {movie.genre}</p>
@@ -299,31 +376,33 @@ useEffect(() => {
         <p className="text-gray-400 text-sm">
           ⭐ Értékelés: {ratings[movie.id] !== undefined ? ratings[movie.id] : "Nincs értékelés"}
         </p>
-
+  
         <p className="text-gray-400 text-sm">🔞 Korhatár: {movie.ageCertificates}</p>
         <p className="mt-2">{movie.summary}</p>
-
+  
         {/* ✅ Saját értékelés */}
-        <p className="text-gray-400 text-sm">
-          ⭐ Saját értékelés: {userReview ? `${userReview.review}/10` : "Nincs értékelés"}
-        </p>
-
+        {token && (
+          <p className="text-gray-400 text-sm">
+            ⭐ Saját értékelés: {getUserReview(movie.id) ? `${getUserReview(movie.id).review}/10` : "Nincs értékelés"}
+          </p>
+        )}
+  
         {token && jog < 3 && (
           <div className="mt-3 flex gap-2">
             <button
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded"
+              className={`text-white font-bold py-1 px-3 rounded ${
+                (ratedMovies.includes(movie.id) || getUserReview(movie.id)) 
+                  ? 'bg-gray-300 cursor-not-allowed' 
+                  : 'bg-yellow-500 hover:bg-yellow-600'
+              }`}
               onClick={() => handleReviewSubmit(movie.id)}
-              disabled={ratedMovies.includes(movie.id)}
+              disabled={ratedMovies.includes(movie.id) || getUserReview(movie.id)}
             >
               Értékelés
             </button>
           </div>
         )}
-
-        {ratedMovies.includes(movie.id) && (
-          <p className="text-green-400 text-sm mt-2">✅ Már értékelted ezt a filmet</p>
-        )}
-
+  
         {token && jog === 1 && (
           <div className="mt-3 flex gap-2">
             <button
@@ -343,80 +422,116 @@ useEffect(() => {
       </div>
     </div>
   );
+  
 })}
+{editingMovie && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h2 className="text-lg font-bold mb-4">🎬 Film szerkesztése</h2>
 
-      {/* **Szerkesztési modal** */}
-      {editingMovie && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-bold mb-4">🎬 Film szerkesztése</h2>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Film címe"
-            />
-            <select
-  name="director"
-  value={newMovieData.director}
-  onChange={(e) => setNewMovieData({ ...newMovieData, director: e.target.value })}
-  className="w-full p-2 border rounded mb-2"
->
-  <option value="">Válassz rendezőt</option>
-  {directors.map((director) => (
-    <option key={director.id} value={director.id}>
-      {director.name}
-    </option>
-  ))}
-</select>
-            <input
-              type="text"
-              name="genre"
-              value={formData.genre}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Műfaj"
-            />
-            <input
-              type="number"
-              name="length"
-              value={formData.length}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Hossz (perc)"
-            />
-            <input
-              type="number"
-              name="reviews"
-              value={formData.reviews}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Értékelések száma"
-            />
-            <input
-              type="number"
-              name="ageCertificates"
-              value={formData.ageCertificates}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Korhatár-besorolás"
-            />
-            <textarea
-              name="summary"
-              value={formData.summary}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Film leírása"
-            />
-            <div className="flex justify-end gap-2">
-              <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={() => setEditingMovie(null)}>Mégse</button>
-              <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={handleSaveEdit}>Mentés</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <input
+        type="text"
+        name="Name"
+        value={formData.Name}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Film címe"
+      />
+
+      <select
+        name="Director"
+        value={formData.Director}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+      >
+        <option value="">Válassz rendezőt</option>
+        {directors.map((director) => (
+          <option key={director.id} value={director.id}>
+            {director.name}
+          </option>
+        ))}
+      </select>
+
+      <input
+        type="text"
+        name="Genre"
+        value={formData.Genre}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Műfaj"
+      />
+
+      <input
+        type="number"
+        name="ReleaseYear"
+        value={formData.ReleaseYear}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Megjelenés éve"
+      />
+
+      <input
+        type="number"
+        name="Length"
+        value={formData.Length}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Hossz (perc)"
+      />
+
+      <input
+        type="number"
+        name="Reviews"
+        value={formData.Reviews}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Értékelések száma"
+      />
+
+      <input
+        type="number"
+        name="AgeCertificates"
+        value={formData.AgeCertificates}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Korhatár-besorolás"
+      />
+
+      <input
+        type="file"
+        name="Kep"
+        accept="image/*"
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+      />
+
+      <textarea
+        name="Summary"
+        value={formData.Summary}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Film leírása"
+      />
+
+      <div className="flex justify-end gap-2">
+        <button
+          className="bg-gray-500 text-white px-4 py-2 rounded"
+          onClick={() => setEditingMovie(null)}
+        >
+          Mégse
+        </button>
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded"
+          onClick={handleSaveEdit}
+        >
+          Mentés
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
             {/* **Hozzáadás forma** */}
       {isAddingMovie && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -475,6 +590,11 @@ useEffect(() => {
         className="w-full p-2 border rounded mb-2"
         placeholder="Korhatár-besorolás"
       />
+              <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setNewMovieData({ ...newMovieData, kep: e.target.files[0] })}
+        />
       <textarea
         name="summary"
         value={newMovieData.summary}

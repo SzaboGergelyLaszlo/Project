@@ -1,58 +1,50 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [felhasznaloNev, setUsername] = useState('');
   const [hash, setPassword] = useState('');
   const [error, setError] = useState('');
-  
+
   const navigate = useNavigate();
 
-  // API URL
-  const apiUrl = 'http://localhost:5297/Login'; // Cseréld ki a saját API URL-edre!
+  const apiUrl = 'http://localhost:5297/Login';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Az adatok, amiket elküldünk a szervernek
+
     const userCredentials = {
       felhasznaloNev: felhasznaloNev,
       hash: hash,
     };
- 
-    try {
-      // POST kérés az API felé
-      const response = await axios.post(apiUrl, userCredentials, {
-        headers: {
-          'Content-Type': 'application/json', // JSON típusú tartalom
-        },
-      });
-      if (response.status === 200) {
-        // Ha sikeres a bejelentkezés
-        alert('Sikeres bejelentkezés!');
-        console.log(response);
-        const token=response.data.token;
-        const jog=response.data.jog;
-        const userId=response.data.id;
 
-        localStorage.setItem('authToken', token);
-        localStorage.setItem('authJog', jog);
-        localStorage.setItem('authUserId',userId);
-        
-        // További logika itt (pl. irányíthatod a felhasználót egy másik oldalra)
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userCredentials),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('Sikeres bejelentkezés!');
+        console.log(data);
+
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('authJog', data.jog);
+        localStorage.setItem('authUserId', data.id);
+        localStorage.setItem('authName', data.name)
+
         navigate('/');
         window.location.reload();
-      }
-    } catch (error) {
-      // Ha hiba történik a kérés során
-      if (error.response) {
-        // Ha van válasz az API-tól
-        setError('Hibás felhasználónév vagy jelszó');
       } else {
-        // Ha nem érkezett válasz (pl. hálózati hiba)
-        setError('Hiba történt a kapcsolatban');
+        setError('Hibás felhasználónév vagy jelszó');
       }
+    } catch (err) {
+      setError('Hiba történt a kapcsolatban');
+      console.error('Bejelentkezési hiba:', err);
     }
   };
 

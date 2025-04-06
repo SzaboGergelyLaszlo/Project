@@ -13,7 +13,8 @@ function Users() {
     hash: '',
     email: '',
     sex: '',
-    role: 2
+    role: 2,
+    profilePic: null // Új mező a képfeltöltéshez
   });
   const [editingId, setEditingId] = useState(null);
 
@@ -68,50 +69,58 @@ function Users() {
       alert("Kérem, töltse ki az összes kötelező mezőt!");
       return;
     }
-
+  
     const method = editingId ? 'PUT' : 'POST';
-    const endpoint = editingId ? `${url}?id=${editingId}` : url;
-
-    const payload = {
-      name: formData.name,
-      felhasznaloNev: formData.felhasznaloNev,
-      salt: formData.salt,
-      hash: formData.hash,
-      email: formData.email,
-      sex: formData.sex,
-      role: formData.role,
-      joined: new Date().toISOString() // A csatlakozás dátuma
-    };
-
+    const endpoint = editingId 
+      ? `http://localhost:5297/User/updateUser?id=${editingId}` 
+      : url; // Ha van id, akkor PUT és az update endpointot hívjuk meg, egyébként POST a szokásos URL.
+  
+    // FormData létrehozása
+    const form = new FormData();
+    form.append("Name", formData.name);
+    form.append("FelhasznaloNev", formData.felhasznaloNev);
+    form.append("Hash", formData.hash);
+    form.append("Email", formData.email);
+    form.append("Sex", formData.sex);
+    form.append("Role", formData.role);
+    form.append("Joined", new Date().toISOString());
+  
+    // Kép hozzáadása, ha van
+    if (formData.profilePic) {
+      form.append("Kep", formData.profilePic);
+    }
+  
     try {
       const res = await fetch(endpoint, {
         method,
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(payload)
+        body: form // FormData használata a fájlok küldéséhez
       });
-
+  
       if (!res.ok) {
         console.error('Hiba a mentés közben:', res.statusText);
         return;
       }
-
-      await fetchData();
+  
+      await fetchData(); // Adatok frissítése
       setFormData({
         name: '',
         felhasznaloNev: '',
+        salt: '',
         hash: '',
         email: '',
         sex: '',
-        role: 2
+        role: 2,
+        profilePic: null // Reseteljük a képet
       });
       setEditingId(null);
     } catch (error) {
       console.error('Hálózati hiba:', error);
     }
   };
+  
 
   const handleEdit = (user) => {
     setFormData({
@@ -121,7 +130,8 @@ function Users() {
       hash: user.hash,
       email: user.email,
       sex: user.sex,
-      role: user.role
+      role: user.role,
+      profilePic: null // Reseteljük a képet szerkesztéskor
     });
     setEditingId(user.id);
   };
@@ -172,6 +182,14 @@ function Users() {
             <option value={2}>Normál felhasználó</option>
             <option value={1}>Admin</option>
           </select>
+
+          {/* Kép feltöltés */}
+          <input
+            type="file"
+            className="w-full mb-2 p-2 rounded"
+            onChange={(e) => setFormData({ ...formData, profilePic: e.target.files[0] })}
+          />
+
           <div className="mt-3">
             <button className="bg-green-600 px-4 py-2 rounded text-white" onClick={handleSubmit}>
               Mentés
@@ -190,7 +208,8 @@ function Users() {
                     hash: '',
                     email: '',
                     sex: '',
-                    role: 2
+                    role: 2,
+                    profilePic: null
                   });
                 }}
               >
@@ -204,12 +223,29 @@ function Users() {
       <div className="flex flex-wrap gap-4">
         {users.map((user) => (
           <div key={user.id} className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white p-4">
+              <div className="relative">
+        {/* Kép megjelenítése */}
+        {user.profilKép && (
+          <img
+            src={user.profilKép}
+            alt={user.name}
+            className="w-full h-56 object-cover rounded-t-lg"
+          />
+            )}
+          </div>
             <h2 className="text-xl font-bold">{user.name}</h2>
             <p className="text-gray-400 text-sm">Felhasználónév: {user.felhasznaloNev}</p>
             <p className="text-gray-400 text-sm">Email: {user.email}</p>
             <p className="text-gray-400 text-sm">Nem: {user.sex}</p>
             <p className="text-gray-400 text-sm">Csatlakozott: {new Date(user.joined).toLocaleDateString()}</p>
             <p className="text-gray-400 text-sm">Szerep: {user.role === 1 ? 'Admin' : 'Normál felhasználó'}</p>
+            {user.profilePic && (
+              <img
+                src={`http://localhost:5297/Images/${user.profilePic}`}
+                alt="Profile"
+                className="w-16 h-16 rounded-full object-cover mb-2"
+              />
+            )}
             {jog === 1 && (
               <div className="mt-2 flex gap-2">
                 <button className="bg-blue-600 px-3 py-1 rounded" onClick={() => handleEdit(user)}>Szerkesztés</button>
