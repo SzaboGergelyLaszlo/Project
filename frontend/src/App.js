@@ -83,7 +83,9 @@ useEffect(() =>
           <Route path="/directors" element={<Directors />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<Admin />} />
+          {token && jog ===1 &(
           <Route path="/users" element={<Users />} />
+        )}
         </Routes>
       </div>
     </Router>
