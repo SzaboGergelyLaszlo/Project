@@ -1,5 +1,6 @@
 ﻿using BackEnd_project.Models;
 using BackEnd_project.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +47,7 @@ namespace BackEnd_project.Controllers
                 return Ok(new { result = user, message = "Sikeres lekérés!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpPost]
 
         public async Task<ActionResult> NewUser([FromForm] CreateUserDTO createUserDTO)
@@ -105,7 +106,7 @@ namespace BackEnd_project.Controllers
         }
 
 
-
+        [Authorize(Roles = "1")]
         [HttpDelete]
 
         public async Task<ActionResult> DeleteUser(Guid id)
@@ -125,7 +126,7 @@ namespace BackEnd_project.Controllers
                 return Ok(new { result = user, message = "Sikeres törlés!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpPut("updateUser")]
 
         public async Task<ActionResult> UpdateUser( Guid id, [FromForm] UpdateUserDTO updateUserDTO)

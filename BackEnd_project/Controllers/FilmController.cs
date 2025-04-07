@@ -1,5 +1,6 @@
 ﻿using BackEnd_project.Models;
 using BackEnd_project.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace BackEnd_project.Controllers
     [ApiController]
     public class FilmController : ControllerBase
     {
+        [Authorize(Roles = "1")]
         [HttpPost]
 
         public async Task<ActionResult> AddNewFilm([FromForm]  CreateFilmDTO createFilmDTO)
@@ -79,7 +81,6 @@ namespace BackEnd_project.Controllers
                 return BadRequest(new { result = "", message = e.Message });
             }
         }
-
         [HttpGet("filmsDirector")]
 
         public async Task<ActionResult> FilmsDirector(Guid id)
@@ -119,7 +120,7 @@ namespace BackEnd_project.Controllers
                 return NotFound(new { result = "", message = "Nincs ilyen film az adatbázisban!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpDelete]
 
         public async Task<ActionResult> DeleteFilm(Guid id)
@@ -139,7 +140,7 @@ namespace BackEnd_project.Controllers
                 return NotFound(new { result = "", message = "Nincs ilyen film az adatbázisban!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpPut]
 
         public async Task<ActionResult> FilmUpdate(Guid id,[FromForm] UpdateFilmDTO updateFilmDTO)

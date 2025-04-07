@@ -14,7 +14,7 @@ namespace BackEnd_project.Controllers
     [ApiController]
     public class ActorController : ControllerBase
     {
-        
+        [Authorize(Roles = "1")]
         [HttpPost]
 
         public async Task<ActionResult> AddNewActor([FromForm] CreateActorDTO createActorDTO)
@@ -60,7 +60,7 @@ namespace BackEnd_project.Controllers
                 return StatusCode(201, new { result = actor, message = "Sikeres felvétel!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpGet]
 
         public async Task<ActionResult> GetAllActor()
@@ -101,7 +101,7 @@ namespace BackEnd_project.Controllers
                 return NotFound(new { result = "", message = "Nincs ilyen Actor az adatbázisban!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpDelete]
 
         public async Task<ActionResult> DeleteActor(Guid id)
@@ -121,7 +121,7 @@ namespace BackEnd_project.Controllers
                 return NotFound(new { result = "", message = "Nincs ilyen Actor az adatbázisban!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpPut]
 
         public async Task<ActionResult> UpdateActor(Guid id,[FromForm] UpdateActorDTO updateActorDTO)

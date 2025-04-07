@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackEnd_project.Controllers
 {
@@ -11,6 +12,7 @@ namespace BackEnd_project.Controllers
     [ApiController]
     public class DirectorController : ControllerBase
     {
+        [Authorize(Roles = "1")]
         [HttpPost]
 
         public async Task<ActionResult> AddNewDirector([FromForm] CreateDirectorDTO createDirectorDTO)
@@ -90,7 +92,7 @@ namespace BackEnd_project.Controllers
                 return NotFound(new { result = "", message = "Nincs ilyen Director az adatbázisban!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpDelete]
 
         public async Task<ActionResult> DeleteDirector(Guid id)
@@ -110,7 +112,7 @@ namespace BackEnd_project.Controllers
                 return NotFound(new { result = "", message = "Nincs ilyen Actor az adatbázisban!" });
             }
         }
-
+        [Authorize(Roles = "1")]
         [HttpPut]
 
         public async Task<ActionResult> UpdateActor(Guid id,[FromForm] UpdateDirectorDTO updateDirectorDTO)

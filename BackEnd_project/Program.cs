@@ -1,6 +1,8 @@
 using BackEnd_project.Models;
+using BackEnd_project.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -72,6 +74,10 @@ namespace BackEnd_project
 
             var builder = WebApplication.CreateBuilder(args);
 
+
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("AuthSettings:JwtOptions"));
+            builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
+
             builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -112,7 +118,8 @@ namespace BackEnd_project
                     ValidateIssuer = true,
                     ValidIssuer = issuer,
                     ValidAudience = auidience,
-                    ValidateAudience = true
+                    ValidateAudience = true,
+                    RoleClaimType = "roles"
                 };
             });
 
@@ -123,6 +130,7 @@ namespace BackEnd_project
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

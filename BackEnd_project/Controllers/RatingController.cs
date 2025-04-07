@@ -1,8 +1,10 @@
 ﻿using BackEnd_project.Models;
 using BackEnd_project.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BackEnd_project.Controllers
 {
@@ -27,7 +29,7 @@ namespace BackEnd_project.Controllers
 
             }
         }
-
+        [Authorize(Roles = "1,2")]
         [HttpPost]
 
         public async Task<ActionResult> NewRating(RatingDTO ratingDTO)
@@ -68,11 +70,18 @@ namespace BackEnd_project.Controllers
                 return Ok(new { result = rating, message = "Sikeres felvétel!" });
             }
         }
-
+        [Authorize(Roles = "1,2")]
         [HttpDelete]
 
         public async Task<ActionResult> RatingDelete(Guid id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { message = "Nincs bejelentkezve felhasználó!" });
+            }
+
             using (var context = new ProjectContext())
             {
                 var rating = await context.Ratings.FirstOrDefaultAsync(x => x.Id == id);
@@ -82,16 +91,28 @@ namespace BackEnd_project.Controllers
                     return NotFound(new { result = "", message = "Nem található ilyen Rating az adatbázisban!" });
                 }
 
+                if (User.IsInRole("2") && rating.UserId.ToString() != userId)
+                {
+                    return Unauthorized(new { message = "Nem törölheted más felhasználó értékelését!" });
+                }
+
                 context.Ratings.Remove(rating);
                 await context.SaveChangesAsync();
                 return Ok(new { result = rating, message = "Sikeres törlés!" });
             }
         }
-
+        [Authorize(Roles = "1,2")]
         [HttpPut]
 
         public async Task<ActionResult> UpdateRating(Guid id, Rating rating)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { message = "Nincs bejelentkezve felhasználó!" });
+            }
+
             using (var context = new ProjectContext())
             {
                 var existingRating = await context.Ratings.FirstOrDefaultAsync(x => x.Id == id);
@@ -99,6 +120,11 @@ namespace BackEnd_project.Controllers
                 if (existingRating == null)
                 {
                     return NotFound(new { result = "", message = "Nem található ilyen Rating az adatbázisban!" });
+                }
+
+                if (User.IsInRole("2") && rating.UserId.ToString() != userId)
+                {
+                    return Unauthorized(new { message = "Nem modósíthatod más felhasználó értékelését!" });
                 }
 
                 existingRating.UserId = rating.UserId;

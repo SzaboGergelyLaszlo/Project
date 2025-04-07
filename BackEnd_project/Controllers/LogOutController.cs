@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BackEnd_project.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd_project.Controllers
@@ -10,6 +11,8 @@ namespace BackEnd_project.Controllers
         [HttpPost("{uId}")]
         public IActionResult Logout(string uId)
         {
+
+
             if (Program.LoggedInUsers.ContainsKey(uId))
             {
                 Program.LoggedInUsers.Remove(uId);

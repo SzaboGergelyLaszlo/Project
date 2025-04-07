@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -8,7 +9,6 @@ namespace BackEnd_project.Controllers
     [ApiController]
     public class FPTFileUploadController : ControllerBase
     {
-
         [Route("FtpServer")]
         [HttpPost]
 
