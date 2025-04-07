@@ -60,7 +60,6 @@ namespace BackEnd_project.Controllers
                 return StatusCode(201, new { result = actor, message = "Sikeres felvétel!" });
             }
         }
-        [Authorize(Roles = "1")]
         [HttpGet]
 
         public async Task<ActionResult> GetAllActor()
