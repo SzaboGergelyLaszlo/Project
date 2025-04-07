@@ -20,7 +20,7 @@ function Movies() {
     genre: "",
     releaseYear: "",
     length: 0,
-    reviews: 0,
+    //reviews: 0,
     ageCertificates: 0,
     summary: ""
     });
@@ -122,7 +122,7 @@ const handleAddMovie = async () => {
   formData.append("Length", newMovieData.length.toString());
   formData.append("Summary", newMovieData.summary);
   formData.append("AgeCertificates", newMovieData.ageCertificates.toString());
-  formData.append("Reviews", newMovieData.reviews.toString());
+  //formData.append("Reviews", newMovieData.reviews.toString());
 
   // Ha van kép (pl. fájl feltöltő inputból)
   if (newMovieData.kep) {
@@ -155,7 +155,7 @@ const handleAddMovie = async () => {
       genre: "",
       releaseYear: "",
       length: 0,
-      reviews: 0,
+      //reviews: 0,
       ageCertificates: 0,
       summary: "",
       kep: null,
@@ -202,7 +202,7 @@ const handleAddMovie = async () => {
       Length: movie.length,
       Director: movie.director,
       AgeCertificates: movie.ageCertificates,
-      Reviews: movie.reviews,
+      //Reviews: movie.reviews,
       Kep: null,
     });
   };
@@ -230,7 +230,7 @@ const handleAddMovie = async () => {
       payload.append("Length", formData.Length);
       payload.append("Director", formData.Director); // UUID!
       payload.append("AgeCertificates", formData.AgeCertificates);
-      payload.append("Reviews", formData.Reviews);
+     // payload.append("Reviews", formData.Reviews);
   
       // Csak akkor adjuk hozzá a képet, ha van új választva
       if (formData.Kep) {
@@ -472,15 +472,6 @@ return (
         onChange={handleInputChange}
         className="w-full p-2 border rounded mb-2"
         placeholder="Hossz (perc)"
-      />
-
-      <input
-        type="number"
-        name="Reviews"
-        value={formData.Reviews}
-        onChange={handleInputChange}
-        className="w-full p-2 border rounded mb-2"
-        placeholder="Értékelések száma"
       />
 
       <input

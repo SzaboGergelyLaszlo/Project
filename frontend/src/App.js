@@ -20,7 +20,7 @@ const [movieData, setMovieData] = useState([]);
 const token = localStorage.getItem('authToken');
 const jog = localStorage.getItem('authJog');
 const userId=localStorage.getItem('authUserId');
-
+const date=localStorage.getItem('authLoginTime');
 
 useEffect(() =>
     {
@@ -42,6 +42,21 @@ useEffect(() =>
             setMovieData((response.result))
         })()
     }, [])
+
+    useEffect(() => {
+      const loginTime = parseInt(localStorage.getItem('authLoginTime'), 10);
+      const now = Date.now();
+    
+      // 24 óra = 86_400_000 milliszekundum
+      if (loginTime && now - loginTime > 86400000) {
+        localStorage.removeItem('authToken'); 
+        localStorage.removeItem('authJog'); 
+        localStorage.removeItem('authUserID');
+        localStorage.removeItem('authName');
+        localStorage.removeItem('authLoginTime');
+        window.location.reload();
+      }
+    }, []);
     
   return (
         <div className="flex flex-wrap justify-center gap-6 mt-6">
@@ -69,6 +84,7 @@ useEffect(() =>
             localStorage.removeItem('authJog'); 
             localStorage.removeItem('authUserID')
             localStorage.removeItem('authName');// Kiléptetés
+            localStorage.removeItem('authLoginTime');
             window.location.reload();  // Az oldal újratöltése a frissítéshez
           }}>Kilépés</button></li>
         )}

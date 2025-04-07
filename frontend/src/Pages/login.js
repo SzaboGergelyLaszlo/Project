@@ -34,7 +34,8 @@ const Login = () => {
         localStorage.setItem('authToken', data.token);
         localStorage.setItem('authJog', data.jog);
         localStorage.setItem('authUserId', data.id);
-        localStorage.setItem('authName', data.name)
+        localStorage.setItem('authName', data.name);
+        localStorage.setItem('authLoginTime', Date.now().toString());
 
         navigate('/');
         window.location.reload();

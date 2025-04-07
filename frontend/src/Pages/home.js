@@ -7,17 +7,17 @@ function Home() {
   const featuredMovies = [
     {
       title: "A keresztapa",
-      image: "https://upload.wikimedia.org/wikipedia/en/1/1c/Godfather_ver1.jpg",
+      image: "./img/Godfather_ver1.jpg",
       description: "A maffia világa, családi hűség és hatalom – egy filmtörténeti klasszikus.",
     },
     {
       title: "A sötét lovag",
-      image: "https://upload.wikimedia.org/wikipedia/en/8/8a/Dark_Knight.jpg",
+      image: "./img/The_Dark_knight.jpg",
       description: "Batman szembenéz Jokerral Gotham sorsáért – sötét, intenzív, zseniális.",
     },
     {
       title: "Forrest Gump",
-      image: "https://upload.wikimedia.org/wikipedia/en/6/67/Forrest_Gump_poster.jpg",
+      image: "./img/Forrest_Gump_poster.jpg",
       description: "Az élet egy doboz bonbon – Forrest Gump története megindító és inspiráló.",
     },
   ];

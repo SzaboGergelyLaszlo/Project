@@ -38,6 +38,7 @@ function Actors() {
       const response = await fetch(`${url}`, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
       });
       if (!response.ok) throw new Error("Hiba a színészek lekérésekor");
@@ -54,7 +55,9 @@ function Actors() {
     try {
       const response = await fetch(`${url}?id=${id}`, {
         method: "DELETE",
-        headers: {},
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
       });
       if (!response.ok) throw new Error("Hiba törlés közben");
       setActorData((prev) => prev.filter((actor) => actor.id !== id));
@@ -89,7 +92,9 @@ function Actors() {
 
       const response = await fetch(endpoint, {
         method,
-        headers: {},
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         body: form,
       });
 
