@@ -25,7 +25,7 @@ public partial class Film
 
     public virtual Director DirectorNavigation { get; set; } = null!;
 
-    public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+    public virtual ICollection<Rating>? Ratings { get; set; } = new List<Rating>();
 
     public virtual ICollection<Actor> Actors { get; set; } = new List<Actor>();
 }
