@@ -372,9 +372,11 @@ return (
             <p className="text-gray-400 text-sm">
               ⭐ Értékelés: {ratings[movie.id] !== undefined ? ratings[movie.id] : "Nincs értékelés"}
             </p>
-
             <p className="text-gray-400 text-sm">🔞 Korhatár: {movie.ageCertificates}</p>
             <p className="mt-2">{movie.summary}</p>
+            <p className="text-blue-400 text-sm">Színészek: {movie.actors.map((actorMovie) =>
+              <div>{actorMovie.name}</div>
+              )}</p>
 
             {/* ✅ Saját értékelés */}
             {token && (

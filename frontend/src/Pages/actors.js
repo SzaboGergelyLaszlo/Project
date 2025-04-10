@@ -229,6 +229,9 @@ function Actors() {
                 Oscar díjas: {actor.oscarAward ? "✅" : "❌"}
               </p>
               <p className="text-gray-400 text-sm">Nem: {actor.sex}</p>
+              <p className="text-blue-400 text-sm">Filmek: {actor.films.map((actorMovie) =>
+              <div>{actorMovie.name}</div>
+              )}</p>
 
               {jog === 1 && (
                 <div className="flex gap-2 mt-3">
